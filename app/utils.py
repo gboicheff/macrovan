@@ -418,7 +418,7 @@ def get_entries():
         "Inc" : "This is a list of Inconsistent voters in your turf.  They did not vote in August or in the 2018, or 2016 election.  We want to encourage them to vote."
     }
     # Had to use full path to get it to work for me.
-    fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    fname = r"io\Input\Nov 2020 -Tracking All Voters.xlsx"
     df = pd.read_excel(fname, sheet_name="Sheet1")
     turfs = []
     count = 0
