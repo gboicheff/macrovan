@@ -16,6 +16,8 @@ chromedriver*.*
 # chrome user profile
 chrome-data/
 
+#Organizers folders
+Organizers
 # pycharm project file
 .idea/
 
