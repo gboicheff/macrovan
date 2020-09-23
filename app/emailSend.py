@@ -7,6 +7,7 @@ import os
 import fnmatch
 import datetime
 from utils import *
+import shutil
 
 path = "../macrovan/io/Output/"
 emailBody = '''Your PDFs are attached'''
@@ -15,7 +16,7 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
+testMode = True
 print(os.listdir("."))
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -124,6 +125,33 @@ def input_choice():
         print("Please enter (Y/N):")
         return input_choice()
 
+#iterate through folder_dict and create a subfolder copying the files over for each organizer
+def create_folders(folder_dict, parent_folder_name):
+    parent_path = os.getcwd()
+    if(os.path.isdir(parent_folder_name)):
+        shutil.rmtree(parent_folder_name)
+    os.mkdir(parent_folder_name)
+    os.chdir(parent_folder_name)
+    for subfolder in folder_dict:
+        os.mkdir(subfolder)
+        os.chdir(subfolder)
+        for file in folder_dict[subfolder]:
+            search_file = file + "*" + ".pdf"
+            search_file = search_file.replace(" ", "")
+            for file in os.listdir(parent_path+"\io\output"):
+                found_file = file.replace(" ", "")
+                print(search_file)
+                print(found_file)
+                print()
+                if fnmatch.fnmatch(found_file, search_file):
+                    shutil.copy(parent_path+"\io\output\\"+file, file)
+                    break
+        os.chdir("..")
+    os.chdir(parent_path)
+
+    
+
+
 
 def send_files():
     #Add everybody to the CC list
@@ -133,6 +161,7 @@ def send_files():
     turfs = get_entries()
     list_dict = extract_list_info()
     session = initialize_session()
+    organizerFiles = {}
     success = True
     sent_count = 0
     sent_list = []
@@ -149,14 +178,19 @@ def send_files():
         final_cc_list = dev_cc_list + [bc_email, organizer_email]
         turf_name_s = turf_name.split()
         print(turf_name)
-        filename = turf_name_s[0] + " 2020 Nov " + turf_name_s[1] + " " + turf_name_s[2]  
+        filename = turf_name + " " + first_name + " VBM"
+        if organizer_email in organizerFiles:
+            organizerFiles[organizer_email] += [filename]
+        else:
+            organizerFiles[organizer_email] = [filename]  
         print("Send email to " + first_name + " " + last_name + " at " + receiver_address)
         print("CCing: " + str(final_cc_list))
         print("Expected filename: " + filename)
         foundFile = find_file(filename, True)
+        # print(list_dict)
         print("Found filename: " + find_file(filename, True))
         if input_choice():
-            email = create_email([receiver_address], [filename], first_name, last_name, final_cc_list, list_dict[turf_name], type_message)
+            email = create_email([receiver_address], [filename], first_name, last_name, final_cc_list, list_dict[filename], type_message)
             if not testMode:
                 if email != False:
                     all_to_addresses = [receiver_address] + final_cc_list
@@ -188,6 +222,7 @@ def send_files():
     print("==================================================")
     for entry in sent_list:
         print(entry)
+    create_folders(organizerFiles, "Organizers")
     
 
 if __name__ == '__main__':
