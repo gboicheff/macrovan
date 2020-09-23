@@ -147,9 +147,7 @@ def create_folders(folder_dict, parent_folder_name):
                     shutil.copy(parent_path+"\io\output\\"+file, file)
                     break
         os.chdir("..")
-    os.chdir(parent_path)
-
-    
+    os.chdir(parent_path)    
 
 def create_organizer_folders():
     organizerFiles = {}
@@ -158,7 +156,7 @@ def create_organizer_folders():
         first_name = turf['first_name']
         turf_name = turf['turf_name']
         organizer_email = turf['organizer_email_address']
-        filename = turf_name + " " + first_name + " VBM"
+        filename = turf_name + " " + first_name
         if organizer_email in organizerFiles:
             organizerFiles[organizer_email] += [filename]
         else:
@@ -189,7 +187,8 @@ def send_files():
         type_message = turf['message']
         final_cc_list = dev_cc_list + [bc_email, organizer_email]
         print(turf_name)
-        filename = turf_name + " " + first_name + " VBM"
+        # filename = turf_name + " " + first_name + " VBM"
+        filename = turf_name + " " + first_name
         if organizer_email in organizerFiles:
             organizerFiles[organizer_email] += [filename]
         else:
@@ -238,5 +237,6 @@ def send_files():
 
 if __name__ == '__main__':
     #send_files()
-    create_organizer_folders()
+    #create_organizer_folders()
     #print(extract_list_info())
+    print(extract_list_info())
