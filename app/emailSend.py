@@ -151,7 +151,19 @@ def create_folders(folder_dict, parent_folder_name):
 
     
 
-
+def create_organizer_folders():
+    organizerFiles = {}
+    turfs = get_entries()
+    for turf in turfs:
+        first_name = turf['first_name']
+        turf_name = turf['turf_name']
+        organizer_email = turf['organizer_email_address']
+        filename = turf_name + " " + first_name + " VBM"
+        if organizer_email in organizerFiles:
+            organizerFiles[organizer_email] += [filename]
+        else:
+            organizerFiles[organizer_email] = [filename]          
+    create_folders(organizerFiles, "Organizers")
 
 def send_files():
     #Add everybody to the CC list
@@ -176,7 +188,6 @@ def send_files():
         organizer_email = turf['organizer_email_address']
         type_message = turf['message']
         final_cc_list = dev_cc_list + [bc_email, organizer_email]
-        turf_name_s = turf_name.split()
         print(turf_name)
         filename = turf_name + " " + first_name + " VBM"
         if organizer_email in organizerFiles:
@@ -226,5 +237,6 @@ def send_files():
     
 
 if __name__ == '__main__':
-    send_files()
+    #send_files()
+    create_organizer_folders()
     #print(extract_list_info())
