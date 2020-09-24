@@ -418,7 +418,7 @@ def get_entries():
         "Inc" : "This is a list of Inconsistent voters in your turf.  They did not vote in August or in the 2018, or 2016 election.  We want to encourage them to vote."
     }
     # Had to use full path to get it to work for me.
-    fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    fname = r"io\Input\Nov 2020 -Tracking All Voters.xlsx"
     df = pd.read_excel(fname, sheet_name="Sheet1")
     turfs = []
     count = 0
@@ -458,6 +458,18 @@ def get_entries():
         count += 1
     return turfs
 
+def get_organizer_turfs_dict():
+    turfs = get_entries()
+    organizer_dict = {}
+    for turf in turfs:
+        turf_name = turf["turf_name"]
+        organizer_email = turf["organizer_email_address"]
+        name = turf["first_name"]
+        turf_name = turf_name + " " + name + " VBM"
+        print(turf_name)
+        organizer_dict[turf_name] = [organizer_email]
+    return organizer_dict  
+
 
 def get_fnames(path):
     # Get all the PDF filenames.
@@ -484,7 +496,9 @@ def extract_list_info(path=r'io\Output'):
     #path = r'io\Output'
     print(path)
     pdf_files = get_fnames(path)
+    organizer_dict = get_organizer_turfs_dict()
     list_dict = {}
+    print(organizer_dict)
     for filename in pdf_files:
         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
         pdfFileObj = open(path + '\\' + filename, 'rb')
@@ -505,13 +519,18 @@ def extract_list_info(path=r'io\Output'):
             lnum = '0-0'
             lname, date_part = filename.split("_2020", 1)
             print(filename, '\n', lname, '\n', date_part, '\n', page, '\n')
-            #exit(2)
-
+            #exit(2)        
+        if lname in organizer_dict:
+            organizer_email = organizer_dict[lname]
+        else:
+            organizer_email = "NONE"
+            # print("No organizer found for " + lname)
         list_dict[lname] = {
             'list_number' : lnum,
             'door_count' : doors,
             'person_count' : people,
             'date_generated' : date,
-            'turf_name' : lname
+            'turf_name' : lname,
+            'organizer_email' : organizer_email
         }
     return list_dict
