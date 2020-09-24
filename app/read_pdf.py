@@ -14,9 +14,11 @@ if __name__ == '__main__':
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output'
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200901125934_35_files'
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200919022945_20_files'
-    path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200921142023_357_files'
+    #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200921142023_357_files'
+    path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files'
+    # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files
     pdf_files = get_fnames(path)
     list_dict = extract_list_info(path)
     df = pd.DataFrame(list_dict).transpose()
-    write_path = r'..\io\Output\PDFs\PDFExports_20200921142023_357_files\List Numbers.xlsx'
-    write_excel(write_path, list_dict)
+    write_path = r'..\io\Output\PDFs\VBM files\List Numbers.xlsx'
+    write_excel(write_path, df)
