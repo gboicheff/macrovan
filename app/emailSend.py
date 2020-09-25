@@ -15,7 +15,7 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = True
+testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
 dont_want_to_watch = True
@@ -188,10 +188,10 @@ def create_organizer_folders():
 
 def send_files():
     dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    # dev_cc_list = ["gboicheff@gmail.com"]
+    #dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_entries()
-    list_dict = extract_list_info()
+    list_dict = extract_list_info_email()
     session = initialize_session()
     organizerFiles = {}
     success = True
@@ -199,6 +199,7 @@ def send_files():
     sent_list = []
     for turf in turfs:
         print("-------------------------------------------")
+        print("yes: " + turf['yes'])
         first_name = turf['first_name']
         last_name = turf['last_name']
         turf_name = turf['turf_name']
@@ -261,3 +262,4 @@ if __name__ == '__main__':
     #create_organizer_folders()
     #print(extract_list_info())
     # print(extract_list_info())
+    # print(extract_list_info_email())

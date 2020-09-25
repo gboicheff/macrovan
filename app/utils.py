@@ -15,7 +15,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.remote.command import Command
 import ctypes  # for windows message pop-up
 import pandas as pd
-
+import re
 
 def get_os():
     # print(sys.platform)
@@ -425,39 +425,42 @@ def get_entries():
     # todo: fix count and unused turf iterator
     for turf in df['Organizer'].values:
         send_email = df['Send an Email to BC?'].values[count]
-        if send_email == "Yes" or send_email == "yes":
+        if send_email == "Yes":
             organizer = df['Organizer'].values[count]
-            if not pd.isnull(organizer):
-                first_name = df['BC First Name'].values[count]
-                last_name = df['BC LastName'].values[count]
-                turf_name = df['Name in VAN'].values[count]
-                turf_name = turf_name.replace(".", "")
-                organizer_phone = df['Org Phone'].values[count]
+            first_name = df['BC First Name'].values[count]
+            last_name = df['BC LastName'].values[count]
+            turf_name = df['Name in VAN'].values[count]
+            organizer_phone = df['Org Phone'].values[count]
+            total_voters = df['Total Voters'].values[count]
+            organizer_name = df['Org Name'].values[count]
+            if not pd.isnull(organizer) and not pd.isnull(email_address) and not pd.isnull(turf_name) and not pd.isnull(organizer):
                 if organizer_phone == 0 or organizer_phone == "0":
                     organizer_phone = ""
-                organizer_name = df['Org Name'].values[count]
-                total_voters = df['Total Voters'].values[count]
-                if organizer_name == "Jane Thomas":
-                    turf_name += " " + df['Bldg Name'].values[count].replace(".", " ").replace("'", " ")
+                if pd.isnull(first_name):
+                    first_name=""
+                else:
+                    first_name.replace(" ", "")
+                # if organizer_name == "Jane Thomas":
+                #     turf_name += " " + df['Bldg Name'].values[count].replace(".", " ").replace("'", " ")
                 # building = df['Bldg Name'].values[count]
                 bc_email_address = df['BC Email'].values[count]
-                # email_address = df['Email to:'].values[count]
-                if not pd.isnull(email_address) and not pd.isnull(turf_name) and not pd.isnull(organizer):
-                    turfs.append({
-                        "first_name" : first_name,
-                        "last_name" : last_name,
-                        # "email_address" : email_address,
-                        # "bc_name" : bc_name,
-                        "email_address" : bc_email_address,
-                        "organizer_email_address" : organizer,
-                        "organizer_phone" : organizer_phone,
-                        "organizer_name" : organizer_name,
-                        "turf_name" : turf_name,
-                        "total_voters" : total_voters
-                        # "building_name" : building,
-                        # "message" : type_dict[pdf_type]
-                    })
-            count += 1
+                # email_address = df['Email to:'].values[count]                
+                turfs.append({
+                    "yes" : send_email,
+                    "first_name" : str(first_name),
+                    "last_name" : str(last_name),
+                    # "email_address" : email_address,
+                    # "bc_name" : bc_name,
+                    "email_address" : str(bc_email_address),
+                    "organizer_email_address" : str(organizer),
+                    "organizer_phone" : organizer_phone,
+                    "organizer_name" : str(organizer_name),
+                    "turf_name" : str(turf_name),
+                    "total_voters" : total_voters
+                    # "building_name" : building,
+                    # "message" : type_dict[pdf_type]
+                })
+        count += 1
     return turfs
 
 def get_organizer_turfs_dict():
@@ -467,7 +470,7 @@ def get_organizer_turfs_dict():
         turf_name = turf["turf_name"]
         organizer_email = turf["organizer_email_address"]
         name = turf["first_name"]
-        turf_name = turf_name + " " + name + " VBM"
+        turf_name = turf_name
         organizer_dict[turf_name] = [organizer_email]
     return organizer_dict  
 
@@ -535,3 +538,39 @@ def extract_list_info(path=r'io\Output'):
         }
     return list_dict
 
+def extract_list_info_email(path=r'io\Output'):
+    # Loop through all the PDF files.
+    #path = r'io\Output'
+    pdf_files = get_fnames(path)
+    list_dict = {}
+    for filename in pdf_files:
+        #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
+        pdfFileObj = open(path + '\\' + filename, 'rb')
+        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+        page = pdfReader.getPage(0).extractText()
+        first_part, doors = page.split("Doors:", 1)
+        date, people = page.split("People:", 1)
+        date = date.split("Generated")[1]
+        date = date.split(" ")[1]
+        doors = int(doors.split("Affiliation")[0])
+        people = int(people.split("Affiliation")[0].split()[0])
+        page = pdfReader.getPage(2).extractText()
+        # print('Page =', page)
+        if people != 0:
+            lname, lnum = page.split("List", 1)
+            lnum = lnum.split(" ")[1]
+        else:
+            lnum = '0-0'
+            lname, date_part = filename.split("_2020", 1)
+        reg = re.search(".*(Turf [0-9]+)",lname)
+        lname = reg.group()
+        if lname.count("Turf") > 1:
+            lname = lname[lname.find("Turf")]
+        list_dict[lname] = {
+            'list_number' : lnum,
+            'door_count' : doors,
+            'person_count' : people,
+            'date_generated' : date,
+            'turf_name' : lname,
+        }
+    return list_dict
