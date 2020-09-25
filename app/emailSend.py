@@ -16,7 +16,7 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = True
+testMode = False
 print(os.listdir("."))
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -30,18 +30,19 @@ def initialize_session():
     else:
         print("Session not started.  Test mode is on.")
 
-def create_email(receiver_addresses, filenames, first_name, last_name, cc_list, list_dict, type_message):
-    message = MIMEMultipart()
-    message['From'] = sender_address
-    message['Subject'] = list_dict['turf_name'] + " PDF"
-    list_number = " - ".join(list_dict['list_number'].split("-"))
-    doors = list_dict['door_count']
-    people = list_dict['person_count']
+def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
     date = list_dict['date_generated']
     date_1 = datetime.datetime.strptime(date, "%m/%d/%y")
     dt = date_1 + datetime.timedelta(days=30)
     end_date = '{0}/{1}/{2:02}'.format(dt.month, dt.day, dt.year % 100)
-    body = email_body.format(first_name, list_number, end_date, doors, people, type_message)
+    message = MIMEMultipart()
+    message['From'] = sender_address
+    message['Subject'] = list_dict['turf_name'] + " PDF Expires " + end_date
+    list_number = " - ".join(list_dict['list_number'].split("-"))
+    doors = list_dict['door_count']
+    people = list_dict['person_count']
+    body = email_body.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
+    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']))
     message['To'] = ",".join(receiver_addresses)
     if(len(cc_list) > 0):
         message['Cc'] = ",".join(cc_list)
@@ -50,7 +51,7 @@ def create_email(receiver_addresses, filenames, first_name, last_name, cc_list, 
     if(numAttachedFiles == len(filenames)):
         return message
     else:
-        print("Failed to create email for " + first_name + " " + last_name + "." + "  Email will not be sent.")
+        print("Failed to create email for " + turf['first_name'] + " " + turf['last_name'] + "." + "  Email will not be sent.")
         return False
 
 def send_email(receiver_addresses, email, session):
@@ -164,9 +165,8 @@ def create_organizer_folders():
     create_folders(organizerFiles, "Organizers")
 
 def send_files():
-    #Add everybody to the CC list
     dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    #dev_cc_list = ["gboicheff@gmail.com"]
+    # dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_entries()
     list_dict = extract_list_info()
@@ -180,15 +180,14 @@ def send_files():
         first_name = turf['first_name']
         last_name = turf['last_name']
         turf_name = turf['turf_name']
-        building_name = turf['building_name']
-        receiver_address = turf['email_address']
-        bc_email = turf['bc_email_address']
-        organizer_email = turf['organizer_email_address']
-        type_message = turf['message']
-        final_cc_list = dev_cc_list + [bc_email, organizer_email]
+        # receiver_address = turf['email_address']
+        # organizer_email = turf['organizer_email_address']
+        receiver_address = 'gboicheff@gmail.com'
+        organizer_email = 'gboicheff@gmail.com'
+        final_cc_list = dev_cc_list + [organizer_email]
         print(turf_name)
         # filename = turf_name + " " + first_name + " VBM"
-        filename = turf_name + " " + first_name
+        filename = turf_name
         if organizer_email in organizerFiles:
             organizerFiles[organizer_email] += [filename]
         else:
@@ -200,7 +199,7 @@ def send_files():
         # print(list_dict)
         print("Found filename: " + find_file(filename, True))
         if input_choice():
-            email = create_email([receiver_address], [filename], first_name, last_name, final_cc_list, list_dict[filename], type_message)
+            email = create_email([receiver_address], [filename], final_cc_list, turf, list_dict[filename])
             if not testMode:
                 if email != False:
                     all_to_addresses = [receiver_address] + final_cc_list
@@ -236,7 +235,7 @@ def send_files():
     
 
 if __name__ == '__main__':
-    #send_files()
+    send_files()
     #create_organizer_folders()
     #print(extract_list_info())
-    print(extract_list_info())
+    # print(extract_list_info())
