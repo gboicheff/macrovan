@@ -19,11 +19,10 @@ testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
 dont_want_to_watch = False
-print(os.listdir("\."))
+
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
-# with open("app/email_body_fancy.txt", "r") as fancy_body:
-#     email_body_fancy = fancy_body.read()
+
 
 def initialize_session():
     if not testMode:
@@ -45,15 +44,16 @@ def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
     people = list_dict['person_count']
+    if turf['organizer_phone'] == 0:
+        phone = ""
+    else:
+        phone = turf['organizer_phone']
     body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
-    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']), expr_date=end_date,organizer_email=turf['organizer_email_address'])
-    # fancy_body = email_body_fancy.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
-    # organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']))
+    organizer_name=turf['organizer_name'], organizer_phone=phone, total_voters=int(turf['total_voters']), expr_date=end_date,organizer_email=turf['organizer_email_address'])
     message['To'] = ",".join(receiver_addresses)
     if(len(cc_list) > 0):
         message['Cc'] = ",".join(cc_list)
     message.attach(MIMEText(body, 'plain'))
-    # message.attach(MIMEText(body, 'text/html'))
     numAttachedFiles = attachpdfs(filenames, message)
     if(numAttachedFiles == len(filenames)):
         return message
@@ -150,8 +150,8 @@ def input_choice():
 
 
 def send_files():
-    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    #dev_cc_list = ["gboicheff@gmail.com"]
+    # dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
+    dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_entries()
     list_dict = extract_list_info_email()
@@ -162,52 +162,48 @@ def send_files():
     sent_list = []
     for turf in turfs:
         print("-------------------------------------------")
-        print("yes: " + turf['yes'])
-        first_name = turf['first_name']
-        last_name = turf['last_name']
-        turf_name = turf['turf_name']
-        # receiver_address = turf['email_address']
-        # organizer_email = turf['organizer_email_address']
-        receiver_address = 'gboicheff@gmail.com'
-        organizer_email = 'gboicheff@gmail.com'
-        final_cc_list = dev_cc_list + [organizer_email]
-        print(turf_name)
-        # filename = turf_name + " " + first_name + " VBM"
-        filename = turf_name
-        if organizer_email in organizerFiles:
-            organizerFiles[organizer_email] += [filename]
-        else:
-            organizerFiles[organizer_email] = [filename]  
-        print("Send email to " + first_name + " " + last_name + " at " + receiver_address)
-        print("CCing: " + str(final_cc_list))
-        print("Expected filename: " + filename)
-        foundFile = find_file(filename, True)
-        # print(list_dict)
-        print("Found filename: " + find_file(filename, True))
-        if dont_want_to_watch or input_choice():
-            email = create_email([receiver_address], [filename], final_cc_list, turf, list_dict[filename])
-            if not testMode:
-                if email != False:
-                    all_to_addresses = [receiver_address] + final_cc_list
-                    if send_email(all_to_addresses, email, session) != False:
-                        print("Email to " + first_name + " " + last_name + " sent")
-                        sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL SENT" + "filename: " + foundFile]
-                        sent_count+=1
-                    else:
-                        print("Email to " + first_name + " " + last_name + " not sent")
-                        sent_list += [first_name + " " + last_name + " " +  receiver_address + " EMAIL NOT SENT"]
-                        success = False
-                else:
-                    success = False
-                    print("Email to " + first_name + " " + last_name + " not sent")
-                    sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
+        if turf['send_email'] == "Yes" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name']):
+            first_name = turf['first_name']
+            last_name = turf['last_name']
+            turf_name = turf['turf_name']
+            receiver_address = 'gboicheff@gmail.com'
+            organizer_email = 'gboicheff@gmail.com'
+            final_cc_list = dev_cc_list + [organizer_email]
+            filename = turf_name
+            if organizer_email in organizerFiles:
+                organizerFiles[organizer_email] += [filename]
             else:
-                sent_count+=1
-                sent_list += [first_name + " " + last_name +  "  " + receiver_address + " EMAIL NOT SENT"]
-        else:
-            print("Email to " + first_name + " " + last_name + " not sent")
-            sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
-            success = False
+                organizerFiles[organizer_email] = [filename]
+            print(turf_name)  
+            print("Send email to " + first_name + " " + last_name + " at " + receiver_address)
+            print("CCing: " + str(final_cc_list))
+            print("Expected filename: " + filename)
+            foundFile = find_file(filename, True)
+            print("Found filename: " + find_file(filename, True))
+            if dont_want_to_watch or input_choice():
+                email = create_email([receiver_address], [filename], final_cc_list, turf, list_dict[filename])
+                if not testMode:
+                    if email != False:
+                        all_to_addresses = [receiver_address] + final_cc_list
+                        if send_email(all_to_addresses, email, session) != False:
+                            print("Email to " + first_name + " " + last_name + " sent")
+                            sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL SENT" + "filename: " + foundFile]
+                            sent_count+=1
+                        else:
+                            print("Email to " + first_name + " " + last_name + " not sent")
+                            sent_list += [first_name + " " + last_name + " " +  receiver_address + " EMAIL NOT SENT"]
+                            success = False
+                    else:
+                        success = False
+                        print("Email to " + first_name + " " + last_name + " not sent")
+                        sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
+                else:
+                    sent_count+=1
+                    sent_list += [first_name + " " + last_name +  "  " + receiver_address + " EMAIL NOT SENT"]
+            else:
+                print("Email to " + first_name + " " + last_name + " not sent")
+                sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
+                success = False
     if not testMode:
         session.quit()
     if success:
@@ -221,8 +217,8 @@ def send_files():
     
 
 if __name__ == '__main__':
-    send_files()
-    #create_organizer_folders()
-    #print(extract_list_info())
-    # print(extract_list_info())
+    # send_files()
+    # #create_organizer_folders()
+    # #print(extract_list_info())
+    print(extract_list_info())
     # print(extract_list_info_email())

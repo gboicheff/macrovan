@@ -412,44 +412,39 @@ def get_turfs():
 
 def get_entries():
     # Had to use full path to get it to work for me.
-    #fname = r"..\io\Input\Nov 2020 -Tracking All Voters.xlsx"
-    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
-    #print('Path string in get_entries = ', path)
-    print('os.getcwd = ', os.getcwd())
+    fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    # fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
     df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
-    #print("df['Organizer'].values = ", df['Organizer'].values)
-    print("df['Organizer Email'].values = ", df['Organizer Email'].values)
     turfs = []
     count = 0
     # todo: fix count and unused turf iterator
     for turf in df['Organizer Email'].values:
         send_email = df['Send an Email to BC?'].values[count]
-        if send_email == "Yes":
-            organizer_email = df['Organizer Email'].values[count]
-            organizer_phone = df['Org Phone'].values[count]
-            organizer_name = df['Org Name'].values[count]
-            first_name = df['BC First Name'].values[count]
-            last_name = df['BC LastName'].values[count]
-            turf_name = df['Name in VAN'].values[count]
-            total_voters = df['Total Voters'].values[count]
-            # if organizer_phone == 0 or organizer_phone == "0":
-            #     organizer_phone = ""
-            # if pd.isnull(first_name):
-            #     first_name=""
-            # else:
-            first_name.replace(" ", "")
-            bc_email_address = df['BC Email'].values[count]          
-            turfs.append({
-                "yes" : send_email,
-                "first_name" : str(first_name),
-                "last_name" : str(last_name),
-                "email_address" : str(bc_email_address),
-                "organizer_email_address" : str(organizer_email),
-                "organizer_phone" : organizer_phone,
-                "organizer_name" : str(organizer_name),
-                "turf_name" : str(turf_name),
-                "total_voters" : total_voters
-            })
+        organizer_email = df['Organizer Email'].values[count]
+        organizer_phone = df['Org Phone'].values[count]
+        organizer_name = df['Org Name'].values[count]
+        first_name = df['BC First Name'].values[count]
+        last_name = df['BC LastName'].values[count]
+        turf_name = df['Name in VAN'].values[count]
+        total_voters = df['Total Voters'].values[count]
+        # if organizer_phone == 0 or organizer_phone == "0":
+        #     organizer_phone = ""
+        # if pd.isnull(first_name):
+        #     first_name=""
+        # else:
+        # first_name.replace(" ", "")
+        bc_email_address = df['BC Email'].values[count]          
+        turfs.append({
+            "send_email" : send_email,
+            "first_name" : str(first_name),
+            "last_name" : str(last_name),
+            "email_address" : str(bc_email_address),
+            "organizer_email_address" : str(organizer_email),
+            "organizer_phone" : organizer_phone,
+            "organizer_name" : str(organizer_name),
+            "turf_name" : str(turf_name),
+            "total_voters" : total_voters
+        })
         count += 1
     return turfs
 
