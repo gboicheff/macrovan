@@ -10,16 +10,20 @@ from utils import *
 import shutil
 
 path = "../macrovan/io/Output/"
-emailBody = '''Your PDFs are attached'''
 emailSubject = "Turf PDF"
 sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
-print(os.listdir("."))
+testMode = True
+
+# Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
+dont_want_to_watch = True
+print(os.listdir("\."))
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
+# with open("app/email_body_fancy.txt", "r") as fancy_body:
+#     email_body_fancy = fancy_body.read()
 
 def initialize_session():
     if not testMode:
@@ -37,16 +41,19 @@ def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
     end_date = '{0}/{1}/{2:02}'.format(dt.month, dt.day, dt.year % 100)
     message = MIMEMultipart()
     message['From'] = sender_address
-    message['Subject'] = list_dict['turf_name'] + " PDF Expires " + end_date
+    message['Subject'] = "Your PDF Named: " + list_dict['turf_name'] + ", Which Expires On: " + end_date
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
     people = list_dict['person_count']
     body = email_body.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
-    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']))
+    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']), expr_date=end_date)
+    # fancy_body = email_body_fancy.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
+    # organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']))
     message['To'] = ",".join(receiver_addresses)
     if(len(cc_list) > 0):
         message['Cc'] = ",".join(cc_list)
     message.attach(MIMEText(body, 'plain'))
+    # message.attach(MIMEText(body, 'text/html'))
     numAttachedFiles = attachpdfs(filenames, message)
     if(numAttachedFiles == len(filenames)):
         return message
@@ -71,8 +78,9 @@ def attachpdfs(file_names, email):
     numFiles = 0
     for file_to_attach in file_names:
         expectedFileName = file_to_attach + ".pdf"
-        fileName = file_to_attach + "*" + ".pdf"
+        fileName = file_to_attach
         fileName = fileName.replace(" ", "")
+        fileName+="*" + ".pdf"
         outFileName = file_to_attach + ".pdf"
         if not testMode:  
             # Search the directory for a file that matches the fileName
@@ -100,6 +108,20 @@ def attachpdfs(file_names, email):
                     break
             # Expected on left, found on right
             print("Expected: " + expectedFileName + "    :    " + "Found: " + foundFileName)
+    return numFiles
+
+def attach_files(file_names, email):
+    numFiles = 0
+    for file_name in file_names:        
+        if not testMode:  
+            for file in os.listdir(path):
+                if fnmatch.fnmatch(file, file_name):
+                    actual_file = MIMEApplication(open(path + file, 'rb').read())
+                    actual_file.add_header('Content-Disposition','attachment', filename=file_name)
+                    email.attach(actual_file)
+                    numFiles+=1
+                    print("Attached " + file)
+                    break                  
     return numFiles
 
 
@@ -198,7 +220,7 @@ def send_files():
         foundFile = find_file(filename, True)
         # print(list_dict)
         print("Found filename: " + find_file(filename, True))
-        if input_choice():
+        if dont_want_to_watch or input_choice():
             email = create_email([receiver_address], [filename], final_cc_list, turf, list_dict[filename])
             if not testMode:
                 if email != False:
@@ -231,7 +253,7 @@ def send_files():
     print("==================================================")
     for entry in sent_list:
         print(entry)
-    create_folders(organizerFiles, "Organizers")
+    # create_folders(organizerFiles, "Organizers")
     
 
 if __name__ == '__main__':

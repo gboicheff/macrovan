@@ -425,39 +425,39 @@ def get_entries():
     # todo: fix count and unused turf iterator
     for turf in df['Organizer'].values:
         send_email = df['Send an Email to BC?'].values[count]
-        if send_email != "Yes" and send_email != "yes":
-            break
-        organizer = df['Organizer'].values[count]
-        if not pd.isnull(organizer):
-            first_name = df['BC First Name'].values[count]
-            last_name = df['BC LastName'].values[count]
-            turf_name = df['Name in VAN'].values[count]
-            organizer_phone = df['Org Phone'].values[count]
-            if organizer_phone == 0 or organizer_phone == "0":
-                organizer_phone = ""
-            organizer_name = df['Org Name'].values[count]
-            total_voters = df['Total Voters'].values[count]
-            if organizer_name == "Jane Thomas":
-                turf_name += " " + df['Bldg Name'].values[count]
-            # building = df['Bldg Name'].values[count]
-            bc_email_address = df['BC Email'].values[count]
-            # email_address = df['Email to:'].values[count]
-            if not pd.isnull(email_address) and not pd.isnull(turf_name) and not pd.isnull(organizer):
-                turfs.append({
-                    "first_name" : first_name,
-                    "last_name" : last_name,
-                    # "email_address" : email_address,
-                    # "bc_name" : bc_name,
-                    "email_address" : bc_email_address,
-                    "organizer_email_address" : organizer,
-                    "organizer_phone" : organizer_phone,
-                    "organizer_name" : organizer_name,
-                    "turf_name" : turf_name,
-                    "total_voters" : total_voters
-                    # "building_name" : building,
-                    # "message" : type_dict[pdf_type]
-                })
-        count += 1
+        if send_email == "Yes" or send_email == "yes":
+            organizer = df['Organizer'].values[count]
+            if not pd.isnull(organizer):
+                first_name = df['BC First Name'].values[count]
+                last_name = df['BC LastName'].values[count]
+                turf_name = df['Name in VAN'].values[count]
+                turf_name = turf_name.replace(".", "")
+                organizer_phone = df['Org Phone'].values[count]
+                if organizer_phone == 0 or organizer_phone == "0":
+                    organizer_phone = ""
+                organizer_name = df['Org Name'].values[count]
+                total_voters = df['Total Voters'].values[count]
+                if organizer_name == "Jane Thomas":
+                    turf_name += " " + df['Bldg Name'].values[count].replace(".", " ").replace("'", " ")
+                # building = df['Bldg Name'].values[count]
+                bc_email_address = df['BC Email'].values[count]
+                # email_address = df['Email to:'].values[count]
+                if not pd.isnull(email_address) and not pd.isnull(turf_name) and not pd.isnull(organizer):
+                    turfs.append({
+                        "first_name" : first_name,
+                        "last_name" : last_name,
+                        # "email_address" : email_address,
+                        # "bc_name" : bc_name,
+                        "email_address" : bc_email_address,
+                        "organizer_email_address" : organizer,
+                        "organizer_phone" : organizer_phone,
+                        "organizer_name" : organizer_name,
+                        "turf_name" : turf_name,
+                        "total_voters" : total_voters
+                        # "building_name" : building,
+                        # "message" : type_dict[pdf_type]
+                    })
+            count += 1
     return turfs
 
 def get_organizer_turfs_dict():

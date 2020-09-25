@@ -14,7 +14,7 @@ Your area is: {turf_name}
 
 There are a total of {total_voters} Democratic voters in this area but for now we're sending you a list with only those who are registered to Vote by Mail because they will receive their ballot next week.
 
-In MiniVan, enter this number:   {list_number}
+Up until {expr_date}, you can enter this number in MiniVAN: {list_number} 
 
 # of VBM doors  {doors}  -  # of VBM voters  {people}
 
@@ -22,7 +22,7 @@ This is a dynamic list, so if you use the MiniVAN app, once the voters' ballot i
 
 If you don't use the MiniVAN app, you can mark your results on your printed list and return it to me by Monday Oct 5.  If you can't finish by then, or need any help please call me.
 
-Please click here to confirm receipt and let us know if you have questions in the comments.  
+Please acknowledge receipt by entering your email address in this form: https://forms.gle/kJSzoYkxXb6siBd49  
 
 Warm Regards,
 {organizer_name}
