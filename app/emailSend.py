@@ -18,7 +18,7 @@ sender_pass = email_password
 testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = True
+dont_want_to_watch = False
 print(os.listdir("\."))
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -45,8 +45,8 @@ def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
     people = list_dict['person_count']
-    body = email_body.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
-    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']), expr_date=end_date)
+    body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
+    organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']), expr_date=end_date,organizer_email=turf['organizer_email_address'])
     # fancy_body = email_body_fancy.format(bc_first_name=turf['first_name'], turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
     # organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=int(turf['total_voters']))
     message['To'] = ",".join(receiver_addresses)
