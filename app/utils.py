@@ -411,12 +411,6 @@ def get_turfs():
 
 
 def get_entries():
-    type_dict = {
-        'Full' : "This is a list of all the targeted voters in your turf.  They are high scoring Democrats and NPAs.",
-        'VBM' : "This is a list of all voters in your turf who have already registered to Vote by Mail.  We want to encourage them to return their ballot as soon as possible.  We'd also like to encourage them to volunteer.",
-        'non-VBM' : "This is a list of all voters in your turf who have NOT registered to Vote by Mail.  We want to encourage them to sign up for VBM as soon as possible.",
-        "Inc" : "This is a list of Inconsistent voters in your turf.  They did not vote in August or in the 2018, or 2016 election.  We want to encourage them to vote."
-    }
     # Had to use full path to get it to work for me.
     fname = r"io\Input\Nov 2020 -Tracking All Voters.xlsx"
     df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
@@ -426,40 +420,31 @@ def get_entries():
     for turf in df['Organizer'].values:
         send_email = df['Send an Email to BC?'].values[count]
         if send_email == "Yes":
-            organizer = df['Organizer'].values[count]
+            organizer_email = df['Organizer Email'].values[count]
+            organizer_phone = df['Org Phone'].values[count]
+            organizer_name = df['Org Name'].values[count]
             first_name = df['BC First Name'].values[count]
             last_name = df['BC LastName'].values[count]
             turf_name = df['Name in VAN'].values[count]
-            organizer_phone = df['Org Phone'].values[count]
             total_voters = df['Total Voters'].values[count]
-            organizer_name = df['Org Name'].values[count]
-            if not pd.isnull(organizer) and not pd.isnull(email_address) and not pd.isnull(turf_name) and not pd.isnull(organizer):
-                if organizer_phone == 0 or organizer_phone == "0":
-                    organizer_phone = ""
-                if pd.isnull(first_name):
-                    first_name=""
-                else:
-                    first_name.replace(" ", "")
-                # if organizer_name == "Jane Thomas":
-                #     turf_name += " " + df['Bldg Name'].values[count].replace(".", " ").replace("'", " ")
-                # building = df['Bldg Name'].values[count]
-                bc_email_address = df['BC Email'].values[count]
-                # email_address = df['Email to:'].values[count]                
-                turfs.append({
-                    "yes" : send_email,
-                    "first_name" : str(first_name),
-                    "last_name" : str(last_name),
-                    # "email_address" : email_address,
-                    # "bc_name" : bc_name,
-                    "email_address" : str(bc_email_address),
-                    "organizer_email_address" : str(organizer),
-                    "organizer_phone" : organizer_phone,
-                    "organizer_name" : str(organizer_name),
-                    "turf_name" : str(turf_name),
-                    "total_voters" : total_voters
-                    # "building_name" : building,
-                    # "message" : type_dict[pdf_type]
-                })
+            # if organizer_phone == 0 or organizer_phone == "0":
+            #     organizer_phone = ""
+            # if pd.isnull(first_name):
+            #     first_name=""
+            # else:
+            first_name.replace(" ", "")
+            bc_email_address = df['BC Email'].values[count]          
+            turfs.append({
+                "yes" : send_email,
+                "first_name" : str(first_name),
+                "last_name" : str(last_name),
+                "email_address" : str(bc_email_address),
+                "organizer_email_address" : str(organizer_email),
+                "organizer_phone" : organizer_phone,
+                "organizer_name" : str(organizer_name),
+                "turf_name" : str(turf_name),
+                "total_voters" : total_voters
+            })
         count += 1
     return turfs
 
@@ -574,3 +559,42 @@ def extract_list_info_email(path=r'io\Output'):
             'turf_name' : lname,
         }
     return list_dict
+
+
+#iterate through folder_dict and create a subfolder copying the files over for each organizer
+def create_folders(folder_dict, parent_folder_name):
+    parent_path = os.getcwd()
+    if(os.path.isdir(parent_folder_name)):
+        shutil.rmtree(parent_folder_name)
+    os.mkdir(parent_folder_name)
+    os.chdir(parent_folder_name)
+    for subfolder in folder_dict:
+        os.mkdir(subfolder)
+        os.chdir(subfolder)
+        for file in folder_dict[subfolder]:
+            search_file = file + "*" + ".pdf"
+            search_file = search_file.replace(" ", "")
+            for file in os.listdir(parent_path+"\io\output"):
+                found_file = file.replace(" ", "")
+                print(search_file)
+                print(found_file)
+                print()
+                if fnmatch.fnmatch(found_file, search_file):
+                    shutil.copy(parent_path+"\io\output\\"+file, file)
+                    break
+        os.chdir("..")
+    os.chdir(parent_path)    
+
+def create_organizer_folders():
+    organizerFiles = {}
+    turfs = get_entries()
+    for turf in turfs:
+        first_name = turf['first_name']
+        turf_name = turf['turf_name']
+        organizer_email = turf['organizer_email_address']
+        filename = turf_name + " " + first_name
+        if organizer_email in organizerFiles:
+            organizerFiles[organizer_email] += [filename]
+        else:
+            organizerFiles[organizer_email] = [filename]          
+    create_folders(organizerFiles, "Organizers")
