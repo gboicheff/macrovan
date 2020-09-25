@@ -16,6 +16,7 @@ from selenium.webdriver.remote.command import Command
 import ctypes  # for windows message pop-up
 import pandas as pd
 import re
+import fnmatch
 
 def get_os():
     # print(sys.platform)
@@ -576,9 +577,6 @@ def create_folders(folder_dict, parent_folder_name):
             search_file = search_file.replace(" ", "")
             for file in os.listdir(parent_path+"\io\output"):
                 found_file = file.replace(" ", "")
-                print(search_file)
-                print(found_file)
-                print()
                 if fnmatch.fnmatch(found_file, search_file):
                     shutil.copy(parent_path+"\io\output\\"+file, file)
                     break
@@ -592,7 +590,7 @@ def create_organizer_folders():
         first_name = turf['first_name']
         turf_name = turf['turf_name']
         organizer_email = turf['organizer_email_address']
-        filename = turf_name + " " + first_name
+        filename = turf_name
         if organizer_email in organizerFiles:
             organizerFiles[organizer_email] += [filename]
         else:

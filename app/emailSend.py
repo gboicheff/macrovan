@@ -218,7 +218,7 @@ def send_files():
 
 if __name__ == '__main__':
     # send_files()
-    # #create_organizer_folders()
+    create_organizer_folders()
     # #print(extract_list_info())
-    print(extract_list_info())
+    # print(extract_list_info())
     # print(extract_list_info_email())
