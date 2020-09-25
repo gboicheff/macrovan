@@ -412,12 +412,17 @@ def get_turfs():
 
 def get_entries():
     # Had to use full path to get it to work for me.
-    fname = r"io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #fname = r"..\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #print('Path string in get_entries = ', path)
+    print('os.getcwd = ', os.getcwd())
     df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
+    #print("df['Organizer'].values = ", df['Organizer'].values)
+    print("df['Organizer Email'].values = ", df['Organizer Email'].values)
     turfs = []
     count = 0
     # todo: fix count and unused turf iterator
-    for turf in df['Organizer'].values:
+    for turf in df['Organizer Email'].values:
         send_email = df['Send an Email to BC?'].values[count]
         if send_email == "Yes":
             organizer_email = df['Organizer Email'].values[count]
@@ -483,7 +488,7 @@ def write_excel(path, df):
 def extract_list_info(path=r'io\Output'):
     # Loop through all the PDF files.
     #path = r'io\Output'
-    print(path)
+    print('Path string = ', path)
     pdf_files = get_fnames(path)
     organizer_dict = get_organizer_turfs_dict()
     list_dict = {}
