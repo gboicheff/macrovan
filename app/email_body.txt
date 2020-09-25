@@ -1,81 +1,51 @@
 Hello {bc_first_name},
 
-
-Thank you again for agreeing to be a block captain for this all important election!  
-
+Thank you again for agreeing to be a block captain for this all important election! 
 
 
 Your List Vitals:
-
 --------------------
-
 
 Your area is: {turf_name}
 
-
 There are a total of {total_voters} Democratic voters in this area but for now we're sending you a list with only those who are registered to Vote by Mail because they will receive their ballot next week.
 
-
 Up until {expr_date}, you can enter this number in MiniVAN: {list_number}
-
 
 # of VBM doors  {doors}  -  # of VBM voters  {people}
 
 
-
 The Plan (Details):
-
 ------------------------
-
 
 Below is an outline of what to expect in the next couple of weeks. 
 
-
 On September 26, in concert with the county Democratic Party and Fired Up Pinellas, we're going to contact Democrats and Dem leaning  independents who vote by mail.  Attached is the list of voters in your turf who have requested a mail ballot.  The goal of this initiative is to give VBM voters ballot information and also to encourage them to vote as soon as possible.
-
 
 You will receive by email a pdf  of the door hanger with ballot information that you should either text or email to your voters, along with a message urging them to vote early .  
 
- 
-
 Voters who are signed up to receive mail ballots will get them during the first week of October.  Contact the people on your VBM list between September 29 and October 5 to coincide with the receipt of their mail ballot.  After you send a text or email,  a follow up phone call will add an important personal touch.
-
- 
 
 After this, in mid-October, you will receive a list of people who have not yet voted.  You should contact them to encourage them to vote.  Enter the list number in MiniVAN and each day you will see who is left to vote.  People who have voted will have a small blue "v" next to their name, or their name will completely drop off the list.
 
 
-
-
 Finally:
-
 ---------
-
 
 As you probably know, the attached PDF is linked to a dynamic list by the list number so once the voters' ballot is received they will be removed from the list in MiniVAN, making it easy for you to know you don’t need to waste time on them.  
 
-
 You can find MiniVAN guides at our NEW website: https://www.gotvpinellas.org/guides 
-
 
 Or download a PDF directly with: https://bit.ly/3hX37Vu
 
-
 If you don't use the MiniVAN app, you can mark your results on your printed list and return it to me by Monday Oct 5.  If you can't finish by then, or need any help please call me.
-
 
 Please acknowledge receipt by entering your email address in this form: https://forms.gle/kJSzoYkxXb6siBd49 
 
-
 Warm Regards,
-
 {organizer_name}
-
 {organizer_phone}
-
 {organizer_email}
 
-
 By way of:
-
 Your GOTV-Pinellas Software Development Team!
