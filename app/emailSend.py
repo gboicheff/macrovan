@@ -15,7 +15,7 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = True
+testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
 dont_want_to_watch = True
