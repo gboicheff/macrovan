@@ -429,7 +429,7 @@ def get_entries():
     count = 0
     # todo: fix count and unused turf iterator
     for org_email in df['Organizer Email'].values:
-        print('org_email = ', org_email)
+        # print('org_email = ', org_email)
         send_email = df['Send an Email to BC?'].values[count]
         if send_email == "Yes":
             organizer = df['Organizer Email'].values[count]
@@ -479,7 +479,7 @@ def get_organizer_turfs_dict():
         organizer_email = turf["organizer_email_address"]
         name = turf["first_name"]
         organizer_dict[turf_name_in_van] = organizer_email
-        print('turf_name_in_van = ' + turf_name_in_van + ', organizer_email = ' + organizer_email)
+        #print('turf_name_in_van = ' + turf_name_in_van + ', organizer_email = ' + organizer_email)
     return organizer_dict  
 
 
