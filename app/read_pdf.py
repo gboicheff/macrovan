@@ -30,6 +30,10 @@ if __name__ == '__main__':
         for pdf_file_name in pdf_dict.keys():
             if turf_name_in_van in pdf_file_name:
                 print(turf_name_in_van, ' , ', pdf_file_name)
+                #print(organizer_dict[turf_name_in_van])
+                pdf_dict[pdf_file_name]['organizer_email'] = organizer_dict[turf_name_in_van]
+                print(pdf_dict[pdf_file_name])
+
 
     df = pd.DataFrame(pdf_dict).transpose()
     write_path = r'..\io\Output\PDFs\VBM files\List Numbers.xlsx'
