@@ -18,7 +18,16 @@ if __name__ == '__main__':
     path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files'
     # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files
     pdf_files = get_fnames(path)
-    list_dict = extract_list_info(path)
-    df = pd.DataFrame(list_dict).transpose()
+
+    pdf_dict = extract_pdf_info(path)
+    pdf_dict_keys = pdf_dict.keys()
+    print('pdf_dict_keys = ', pdf_dict_keys)
+
+    organizer_dict = get_organizer_turfs_dict()
+
+    # for keys in organizer_dict.keys:
+    #     for
+
+    df = pd.DataFrame(pdf_dict).transpose()
     write_path = r'..\io\Output\PDFs\VBM files\List Numbers.xlsx'
     write_excel(write_path, df)
