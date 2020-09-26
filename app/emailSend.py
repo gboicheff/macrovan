@@ -18,7 +18,7 @@ sender_pass = email_password
 testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = True
+dont_want_to_watch = False
 
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -53,6 +53,8 @@ def create_email(receiver_addresses, filenames, cc_list, turf):
         total_voters = turf['total_voters'] = "N/A"
     else:
         total_voters = int(turf['total_voters'])
+    if not pd.isnull(turf["first_name"]):
+        turf["first_name"].replace(" ", "")
     body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
     organizer_name=turf['organizer_name'], organizer_phone=phone, total_voters=total_voters, expr_date=end_date,organizer_email=turf['organizer_email_address'])
     message['To'] = ",".join(receiver_addresses)
@@ -155,8 +157,8 @@ def input_choice():
 
 
 def send_files():
-    # dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    dev_cc_list = ["gboicheff@gmail.com"]
+    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
+    # dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_entries()
     session = initialize_session()

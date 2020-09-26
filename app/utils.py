@@ -428,12 +428,6 @@ def get_entries():
         last_name = df['BC LastName'].values[count]
         turf_name = df['Name in VAN'].values[count]
         total_voters = df['Total Voters'].values[count]
-        # if organizer_phone == 0 or organizer_phone == "0":
-        #     organizer_phone = ""
-        # if pd.isnull(first_name):
-        #     first_name=""
-        # else:
-        # first_name.replace(" ", "")
         bc_email_address = df['BC Email'].values[count]          
         turfs.append({
             "send_email" : send_email,
@@ -455,9 +449,7 @@ def get_organizer_turfs_dict():
     for turf in turfs:
         turf_name = turf["turf_name"]
         organizer_email = turf["organizer_email_address"]
-        name = turf["first_name"]
-        turf_name = turf_name
-        organizer_dict[turf_name] = [organizer_email]
+        organizer_dict[turf_name] = organizer_email
     return organizer_dict  
 
 
