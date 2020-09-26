@@ -517,49 +517,78 @@ def extract_list_info(path=r'io\Output'):
         list_dict[lname] = {
             'list_number' : lnum,
             'door_count' : doors,
-            'person_count' : people,
+            'people_count' : people,
             'date_generated' : date,
             'turf_name' : lname,
             'organizer_email' : organizer_email
         }
     return list_dict
 
-def extract_list_info_email(path=r'io\Output'):
-    # Loop through all the PDF files.
-    #path = r'io\Output'
-    pdf_files = get_fnames(path)
-    list_dict = {}
-    for filename in pdf_files:
-        #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
-        pdfFileObj = open(path + '\\' + filename, 'rb')
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-        page = pdfReader.getPage(0).extractText()
-        first_part, doors = page.split("Doors:", 1)
-        date, people = page.split("People:", 1)
-        date = date.split("Generated")[1]
-        date = date.split(" ")[1]
-        doors = int(doors.split("Affiliation")[0])
-        people = int(people.split("Affiliation")[0].split()[0])
-        page = pdfReader.getPage(2).extractText()
-        # print('Page =', page)
-        if people != 0:
-            lname, lnum = page.split("List", 1)
-            lnum = lnum.split(" ")[1]
-        else:
-            lnum = '0-0'
-            lname, date_part = filename.split("_2020", 1)
-        reg = re.search(".*(Turf [0-9]+)",lname)
-        lname = reg.group()
-        if lname.count("Turf") > 1:
-            lname = lname[lname.find("Turf")]
-        list_dict[lname] = {
-            'list_number' : lnum,
-            'door_count' : doors,
-            'person_count' : people,
-            'date_generated' : date,
-            'turf_name' : lname,
+def extract_pdf_info(filename):
+    path=r'io\Output'
+    pdfFileObj = open(path + '\\' + filename, 'rb')
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+    page = pdfReader.getPage(0).extractText()
+    first_part, doors = page.split("Doors:", 1)
+    date, people = page.split("People:", 1)
+    date = date.split("Generated")[1]
+    date = date.split(" ")[1]
+    doors = int(doors.split("Affiliation")[0])
+    people = int(people.split("Affiliation")[0].split()[0])
+    page = pdfReader.getPage(2).extractText()
+    # print('Page =', page)
+    if people != 0:
+        lname, lnum = page.split("List", 1)
+        lnum = lnum.split(" ")[1]
+    else:
+        lnum = '0-0'
+        lname, date_part = filename.split("_2020", 1)
+    print(lname)
+    return {
+        "list_number" : lnum,
+        "door_count" : doors,
+        "people_count" : people,
+        "date_generated" : date,
+        "turf_name" : lname
         }
-    return list_dict
+
+# def extract_list_info_email(path=r'io\Output'):
+#     # Loop through all the PDF files.
+#     #path = r'io\Output'
+#     pdf_files = get_fnames(path)
+#     list_dict = {}
+#     for filename in pdf_files:
+#         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
+#         pdfFileObj = open(path + '\\' + filename, 'rb')
+#         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+#         page = pdfReader.getPage(0).extractText()
+#         first_part, doors = page.split("Doors:", 1)
+#         date, people = page.split("People:", 1)
+#         date = date.split("Generated")[1]
+#         date = date.split(" ")[1]
+#         doors = int(doors.split("Affiliation")[0])
+#         people = int(people.split("Affiliation")[0].split()[0])
+#         page = pdfReader.getPage(2).extractText()
+#         # print('Page =', page)
+#         if people != 0:
+#             lname, lnum = page.split("List", 1)
+#             lnum = lnum.split(" ")[1]
+#         else:
+#             lnum = '0-0'
+#             lname, date_part = filename.split("_2020", 1)
+#         print(lname)
+#         reg = re.search(".*(Turf [0-9]+)",lname)
+#         lname = reg.group()
+#         if lname.count("Turf") > 1:
+#             lname = lname[lname.find("Turf")]
+#         list_dict[lname] = {
+#             'list_number' : lnum,
+#             'door_count' : doors,
+#             'person_count' : people,
+#             'date_generated' : date,
+#             'turf_name' : lname,
+#         }
+#     return list_dict
 
 
 #iterate through folder_dict and create a subfolder copying the files over for each organizer

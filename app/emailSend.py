@@ -15,10 +15,10 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
+testMode = True
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = False
+dont_want_to_watch = True
 
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -33,7 +33,8 @@ def initialize_session():
     else:
         print("Session not started.  Test mode is on.")
 
-def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
+def create_email(receiver_addresses, filenames, cc_list, turf):
+    list_dict = extract_pdf_info(find_file(filenames[0], True))
     date = list_dict['date_generated']
     date_1 = datetime.datetime.strptime(date, "%m/%d/%y")
     dt = date_1 + datetime.timedelta(days=30)
@@ -43,13 +44,17 @@ def create_email(receiver_addresses, filenames, cc_list, turf, list_dict):
     message['Subject'] = "Your PDF Named: " + list_dict['turf_name'] + ", Which Expires On: " + end_date
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
-    people = list_dict['person_count']
+    people = list_dict['people_count']
     if turf['organizer_phone'] == 0:
         phone = ""
     else:
         phone = turf['organizer_phone']
+    if pd.isnull(turf['total_voters']):
+        total_voters = turf['total_voters'] = "N/A"
+    else:
+        total_voters = int(turf['total_voters'])
     body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
-    organizer_name=turf['organizer_name'], organizer_phone=phone, total_voters=int(turf['total_voters']), expr_date=end_date,organizer_email=turf['organizer_email_address'])
+    organizer_name=turf['organizer_name'], organizer_phone=phone, total_voters=total_voters, expr_date=end_date,organizer_email=turf['organizer_email_address'])
     message['To'] = ",".join(receiver_addresses)
     if(len(cc_list) > 0):
         message['Cc'] = ",".join(cc_list)
@@ -154,12 +159,12 @@ def send_files():
     dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_entries()
-    list_dict = extract_list_info_email()
     session = initialize_session()
     organizerFiles = {}
     success = True
     sent_count = 0
     sent_list = []
+    sent_file = open("emails.txt", "w")
     for turf in turfs:
         print("-------------------------------------------")
         if turf['send_email'] == "Yes" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name']):
@@ -181,7 +186,7 @@ def send_files():
             foundFile = find_file(filename, True)
             print("Found filename: " + find_file(filename, True))
             if dont_want_to_watch or input_choice():
-                email = create_email([receiver_address], [filename], final_cc_list, turf, list_dict[filename])
+                email = create_email([receiver_address], [filename], final_cc_list, turf)
                 if not testMode:
                     if email != False:
                         all_to_addresses = [receiver_address] + final_cc_list
@@ -204,6 +209,7 @@ def send_files():
                 print("Email to " + first_name + " " + last_name + " not sent")
                 sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
                 success = False
+            sent_file.write(turf_name + "                :                " + foundFile + "\n")
     if not testMode:
         session.quit()
     if success:
@@ -211,14 +217,15 @@ def send_files():
     else:
         print("At least one email not sent!")
     print("==================================================")
+    sent_file.close()
     for entry in sent_list:
         print(entry)
     # create_folders(organizerFiles, "Organizers")
     
 
 if __name__ == '__main__':
-    # send_files()
-    create_organizer_folders()
+    send_files()
+    # create_organizer_folders()
     # #print(extract_list_info())
     # print(extract_list_info())
     # print(extract_list_info_email())
