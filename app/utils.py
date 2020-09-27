@@ -411,14 +411,9 @@ def get_turfs():
 
 
 def get_entries():
-    type_dict = {
-        'Full' : "This is a list of all the targeted voters in your turf.  They are high scoring Democrats and NPAs.",
-        'VBM' : "This is a list of all voters in your turf who have already registered to Vote by Mail.  We want to encourage them to return their ballot as soon as possible.  We'd also like to encourage them to volunteer.",
-        'non-VBM' : "This is a list of all voters in your turf who have NOT registered to Vote by Mail.  We want to encourage them to sign up for VBM as soon as possible.",
-        "Inc" : "This is a list of Inconsistent voters in your turf.  They did not vote in August or in the 2018, or 2016 election.  We want to encourage them to vote."
-    }
     # Had to use full path to get it to work for me.
     #fname = r"..\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #         D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx
     fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
     #print('Path string in get_entries = ', path)
     print('os.getcwd = ', os.getcwd())
@@ -508,6 +503,8 @@ def extract_pdf_info(path=r'io\Output'):
     #path = r'io\Output'
     print('Path string = ', path)
     pdf_files = get_fnames(path)
+    print('pdf_files = ', pdf_files)
+
     #organizer_dict = get_organizer_turfs_dict()
     pdf_dict = {}
 
