@@ -10,6 +10,7 @@ from utils import *
 import shutil
 
 path = "../macrovan/io/Output/"
+inputPath = "../macrovan/io/Input/"
 emailSubject = "Turf PDF"
 sender_address = email_address
 sender_pass = email_password
@@ -18,7 +19,7 @@ sender_pass = email_password
 testMode = False
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = False
+dont_want_to_watch = True
 
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -34,6 +35,16 @@ def initialize_session():
         print("Session not started.  Test mode is on.")
 
 def create_email(receiver_addresses, filenames, cc_list, turf):
+    organizer_attachment_dict = {
+        "janeathom@aol.com" : "Thomas QSG Nov2020.pdf",
+        "andybragg@me.com" : "Bragg QSG Nov2020.pdf",
+        "ssinger1313@gmail.com" : "SingerSkipper QSG Nov2020.pdf",
+        "kdsteinway@gmail.com" : "Steinway QSG Nov2020.pdf",
+        "ezrasinger@gmail.com" : "SingerEzra QSG Nov2020.pdf",
+        "dave@weegallery.com" : "Pinto QSG Nov2020.pdf",
+        "stephenpeeples@mac.com" : "Peeples QSG Nov2020.pdf",
+        "mmckay23@tampabay.rr.com" : "McKay QSG Nov2020.pdf"
+    }
     list_dict = extract_pdf_info(find_file(filenames[0], True))
     date = list_dict['date_generated']
     date_1 = datetime.datetime.strptime(date, "%m/%d/%y")
@@ -41,7 +52,7 @@ def create_email(receiver_addresses, filenames, cc_list, turf):
     end_date = '{0}/{1}/{2:02}'.format(dt.month, dt.day, dt.year % 100)
     message = MIMEMultipart()
     message['From'] = sender_address
-    message['Subject'] = "Your PDF Named: " + list_dict['turf_name'] + ", Which Expires On: " + end_date
+    message['Subject'] = "Your PDF Named: " + list_dict['turf_name'] + ", Expires On: " + end_date
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
     people = list_dict['people_count']
@@ -62,6 +73,12 @@ def create_email(receiver_addresses, filenames, cc_list, turf):
         message['Cc'] = ",".join(cc_list)
     message.attach(MIMEText(body, 'plain'))
     numAttachedFiles = attachpdfs(filenames, message)
+    if turf['organizer_email_address'].rstrip() in organizer_attachment_dict:
+        print(organizer_attachment_dict[turf['organizer_email_address'].rstrip()])
+        attach_files([organizer_attachment_dict[turf['organizer_email_address'].rstrip()]],message)
+    else:
+        print("Not found!: " + organizer_attachment_dict[turf['organizer_email_address'].rstrip()])
+        print(turf['organizer_email_address'].replace(" ", ""))
     if(numAttachedFiles == len(filenames)):
         return message
     else:
@@ -121,9 +138,9 @@ def attach_files(file_names, email):
     numFiles = 0
     for file_name in file_names:        
         if not testMode:  
-            for file in os.listdir(path):
+            for file in os.listdir(inputPath):
                 if fnmatch.fnmatch(file, file_name):
-                    actual_file = MIMEApplication(open(path + file, 'rb').read())
+                    actual_file = MIMEApplication(open(inputPath + file, 'rb').read())
                     actual_file.add_header('Content-Disposition','attachment', filename=file_name)
                     email.attach(actual_file)
                     numFiles+=1
@@ -173,8 +190,10 @@ def send_files():
             first_name = turf['first_name']
             last_name = turf['last_name']
             turf_name = turf['turf_name']
-            receiver_address = 'gboicheff@gmail.com'
-            organizer_email = 'gboicheff@gmail.com'
+            receiver_address = turf['email_address'].rstrip().replace(" ", "")
+            organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
+            # receiver_address = 'gboicheff@gmail.com'
+            # organizer_email = 'gboicheff@gmail.com'
             final_cc_list = dev_cc_list + [organizer_email]
             filename = turf_name
             if organizer_email in organizerFiles:
