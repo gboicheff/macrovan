@@ -32,7 +32,7 @@ After this, in mid-October, you will receive a list of people who have not yet v
 Finally:
 ---------
 
-As you probably know, the attached PDF is linked to a dynamic list by the list number so once the voters' ballot is received they will be removed from the list in MiniVAN, making it easy for you to know you don’t need to waste time on them.  
+As you probably know, the attached PDF is linked to a dynamic list by the list number so once the voters' ballot is received they will be removed from the list in MiniVAN, making it easy for you to know you don't need to waste time on them.
 
 You can find MiniVAN guides at our NEW website: https://www.gotvpinellas.org/guides 
 
