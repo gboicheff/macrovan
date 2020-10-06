@@ -415,11 +415,20 @@ def get_entries():
     # Had to use full path to get it to work for me.
     fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
     # fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #fname = r"..\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #         D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx
+    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #print('Path string in get_entries = ', path)
+    print('os.getcwd = ', os.getcwd())
     df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
     turfs = []
+    #print("df['Organizer'].values = ", df['Organizer'].values)
+    #print("df['Organizer Email'].values = ", df['Organizer Email'].values)
+    organizer_data = []
     count = 0
     # todo: fix count and unused turf iterator
-    for turf in df['Organizer Email'].values:
+    for org_email in df['Organizer Email'].values:
+        # print('org_email = ', org_email)
         send_email = df['Send an Email to BC?'].values[count]
         organizer_email = df['Organizer Email'].values[count]
         organizer_phone = df['Org Phone'].values[count]
@@ -428,7 +437,7 @@ def get_entries():
         last_name = df['BC LastName'].values[count]
         turf_name = df['Name in VAN'].values[count]
         total_voters = df['Total Voters'].values[count]
-        bc_email_address = df['BC Email'].values[count]          
+        bc_email_address = df['BC Email'].values[count]
         turfs.append({
             "send_email" : send_email,
             "first_name" : str(first_name),
@@ -440,16 +449,55 @@ def get_entries():
             "turf_name" : str(turf_name),
             "total_voters" : total_voters
         })
+        if send_email == "Yes":
+            organizer = df['Organizer Email'].values[count]
+            first_name = df['BC First Name'].values[count]
+            last_name = df['BC LastName'].values[count]
+            turf_name_in_van = df['Name in VAN'].values[count]
+            # turf_name = df['Name in VAN'].values[count]
+            organizer_phone = df['Org Phone'].values[count]
+            total_voters = df['Total Voters'].values[count]
+            organizer_name = df['Org Name'].values[count]
+            if not pd.isnull(organizer) and not pd.isnull(turf_name_in_van):  # and not pd.isnull(email_address):
+                if organizer_phone == 0 or organizer_phone == "0":
+                    organizer_phone = ""
+                if pd.isnull(first_name):
+                    first_name = ""
+                else:
+                    first_name.replace(" ", "")
+                # if organizer_name == "Jane Thomas":
+                #     turf_name_in_van += " " + df['Bldg Name'].values[count].replace(".", " ").replace("'", " ")
+                # building = df['Bldg Name'].values[count]
+                bc_email_address = df['BC Email'].values[count]
+                # email_address = df['Email to:'].values[count]
+                organizer_data.append({
+                    "yes" : send_email,
+                    "first_name" : str(first_name),
+                    "last_name" : str(last_name),
+                    # "email_address" : email_address,
+                    # "bc_name" : bc_name,
+                    "email_address": str(bc_email_address),
+                    "organizer_email_address": str(organizer),
+                    "organizer_phone": organizer_phone,
+                    "organizer_name": str(organizer_name),
+                    "turf_name_in_van": str(turf_name_in_van),
+                    "total_voters": total_voters
+                    # "building_name" : building,
+                    # "message" : type_dict[pdf_type]
+                })
         count += 1
-    return turfs
+    return organizer_data
+
 
 def get_organizer_turfs_dict():
-    turfs = get_entries()
+    organizer_data = get_entries()
     organizer_dict = {}
-    for turf in turfs:
-        turf_name = turf["turf_name"]
+    for turf in organizer_data:
+        turf_name_in_van = turf["turf_name_in_van"]
         organizer_email = turf["organizer_email_address"]
-        organizer_dict[turf_name] = organizer_email
+        name = turf["first_name"]
+        organizer_dict[turf_name_in_van] = organizer_email
+        #print('turf_name_in_van = ' + turf_name_in_van + ', organizer_email = ' + organizer_email)
     return organizer_dict  
 
 
@@ -473,13 +521,16 @@ def write_excel(path, df):
     writer.save()
 
 
-def extract_list_info(path=r'io\Output'):
+def extract_pdf_info(path=r'io\Output'):
     # Loop through all the PDF files.
     #path = r'io\Output'
     print('Path string = ', path)
     pdf_files = get_fnames(path)
-    organizer_dict = get_organizer_turfs_dict()
-    list_dict = {}
+    print('pdf_files = ', pdf_files)
+
+    #organizer_dict = get_organizer_turfs_dict()
+    pdf_dict = {}
+
     for filename in pdf_files:
         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
         pdfFileObj = open(path + '\\' + filename, 'rb')
@@ -494,7 +545,7 @@ def extract_list_info(path=r'io\Output'):
         page = pdfReader.getPage(2).extractText()
         # print('Page =', page)
         if people != 0:
-            lname, lnum = page.split("List", 1)
+            pdf_file_name, lnum = page.split("List", 1)
             lnum = lnum.split(" ")[1]
         else:
             lnum = '0-0'
@@ -513,8 +564,20 @@ def extract_list_info(path=r'io\Output'):
             'date_generated' : date,
             'turf_name' : lname,
             'organizer_email' : organizer_email
+            pdf_file_name, date_part = filename.split("_2020", 1)
+            # print(filename, '\n', pdf_file_name, '\n', date_part, '\n', page, '\n')
+            #exit(2)
+
+        # print('pdf_file_name = ' + pdf_file_name)
+        pdf_dict[pdf_file_name] = {
+            'list_number': lnum,
+            'door_count': doors,
+            'person_count': people,
+            'date_generated': date,
+            'pdf_file_name': pdf_file_name,
+            #'organizer_email': organizer_email
         }
-    return list_dict
+    return pdf_dict
 
 def extract_pdf_info(filename):
     path=r'io\Output'
@@ -602,7 +665,7 @@ def create_folders(folder_dict, parent_folder_name):
                     shutil.copy(parent_path+"\io\output\\"+file, file)
                     break
         os.chdir("..")
-    os.chdir(parent_path)    
+    os.chdir(parent_path)
 
 def create_organizer_folders():
     organizerFiles = {}
@@ -615,5 +678,5 @@ def create_organizer_folders():
         if organizer_email in organizerFiles:
             organizerFiles[organizer_email] += [filename]
         else:
-            organizerFiles[organizer_email] = [filename]          
+            organizerFiles[organizer_email] = [filename]
     create_folders(organizerFiles, "Organizers")
