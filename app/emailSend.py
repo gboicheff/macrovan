@@ -173,43 +173,6 @@ def input_choice():
         print("Please enter (Y/N):")
         return input_choice()
 
-#iterate through folder_dict and create a subfolder copying the files over for each organizer
-def create_folders(folder_dict, parent_folder_name):
-    parent_path = os.getcwd()
-    if(os.path.isdir(parent_folder_name)):
-        shutil.rmtree(parent_folder_name)
-    os.mkdir(parent_folder_name)
-    os.chdir(parent_folder_name)
-    for subfolder in folder_dict:
-        os.mkdir(subfolder)
-        os.chdir(subfolder)
-        for file in folder_dict[subfolder]:
-            search_file = file + "*" + ".pdf"
-            search_file = search_file.replace(" ", "")
-            for file in os.listdir(parent_path+"\io\output"):
-                found_file = file.replace(" ", "")
-                print(search_file)
-                print(found_file)
-                print()
-                if fnmatch.fnmatch(found_file, search_file):
-                    shutil.copy(parent_path+"\io\output\\"+file, file)
-                    break
-        os.chdir("..")
-    os.chdir(parent_path)    
-
-def create_organizer_folders():
-    organizerFiles = {}
-    turfs = get_entries()
-    for turf in turfs:
-        first_name = turf['first_name']
-        turf_name = turf['turf_name']
-        organizer_email = turf['organizer_email_address']
-        filename = turf_name + " " + first_name
-        if organizer_email in organizerFiles:
-            organizerFiles[organizer_email] += [filename]
-        else:
-            organizerFiles[organizer_email] = [filename]          
-    create_folders(organizerFiles, "Organizers")
 
 def send_files():
     dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]

@@ -16,6 +16,7 @@ from selenium.webdriver.remote.command import Command
 import ctypes  # for windows message pop-up
 import pandas as pd
 import re
+import fnmatch
 
 def get_os():
     # print(sys.platform)
@@ -411,6 +412,12 @@ def get_turfs():
 
 
 def get_entries():
+    # THERE ARE BREAKING CHANGES HERE SINCE USED BY BOTH emailsend and read_pdf but should be repairable
+    # Main issue now is sometimes we have phone numbers etc sometimes we don't
+    # MT also renamed some tokens for clarity
+    # WOULD LIKE TO RENAME THIS FUNCTION TO: get_volunteer_data SINCE IT GETS ORG AND BC CONTACT INFO FOR TURFS
+    # WOULD CHANGE RETURN TO volunteer_data SINCE THAT SAYS IT BETTER
+
     # Had to use full path to get it to work for me.
     #fname = r"..\io\Input\Nov 2020 -Tracking All Voters.xlsx"
     #         D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx
@@ -546,39 +553,78 @@ def extract_pdf_info(path=r'io\Output'):
         }
     return pdf_dict
 
-def extract_list_info_email(path=r'io\Output'):
-    # Loop through all the PDF files.
-    #path = r'io\Output'
-    pdf_files = get_fnames(path)
-    list_dict = {}
-    for filename in pdf_files:
-        #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
-        pdfFileObj = open(path + '\\' + filename, 'rb')
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-        page = pdfReader.getPage(0).extractText()
-        first_part, doors = page.split("Doors:", 1)
-        date, people = page.split("People:", 1)
-        date = date.split("Generated")[1]
-        date = date.split(" ")[1]
-        doors = int(doors.split("Affiliation")[0])
-        people = int(people.split("Affiliation")[0].split()[0])
-        page = pdfReader.getPage(2).extractText()
-        # print('Page =', page)
-        if people != 0:
-            lname, lnum = page.split("List", 1)
-            lnum = lnum.split(" ")[1]
+# def extract_list_info_email(path=r'io\Output'):
+#     # Loop through all the PDF files.
+#     #path = r'io\Output'
+#     pdf_files = get_fnames(path)
+#     list_dict = {}
+#     for filename in pdf_files:
+#         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
+#         pdfFileObj = open(path + '\\' + filename, 'rb')
+#         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+#         page = pdfReader.getPage(0).extractText()
+#         first_part, doors = page.split("Doors:", 1)
+#         date, people = page.split("People:", 1)
+#         date = date.split("Generated")[1]
+#         date = date.split(" ")[1]
+#         doors = int(doors.split("Affiliation")[0])
+#         people = int(people.split("Affiliation")[0].split()[0])
+#         page = pdfReader.getPage(2).extractText()
+#         # print('Page =', page)
+#         if people != 0:
+#             lname, lnum = page.split("List", 1)
+#             lnum = lnum.split(" ")[1]
+#         else:
+#             lnum = '0-0'
+#             lname, date_part = filename.split("_2020", 1)
+#         reg = re.search(".*(Turf [0-9]+)",lname)
+#         lname = reg.group()
+#         if lname.count("Turf") > 1:
+#             lname = lname[lname.find("Turf")]
+#         list_dict[lname] = {
+#             'list_number' : lnum,
+#             'door_count' : doors,
+#             'person_count' : people,
+#             'date_generated' : date,
+#             'turf_name' : lname,
+#         }
+#     return list_dict
+
+
+#iterate through folder_dict and create a subfolder copying the files over for each organizer
+def create_folders(folder_dict, parent_folder_name):
+    parent_path = os.getcwd()
+    if(os.path.isdir(parent_folder_name)):
+        shutil.rmtree(parent_folder_name)
+    os.mkdir(parent_folder_name)
+    os.chdir(parent_folder_name)
+    for subfolder in folder_dict:
+        os.mkdir(subfolder)
+        os.chdir(subfolder)
+        for file in folder_dict[subfolder]:
+            search_file = file + "*" + ".pdf"
+            search_file = search_file.replace(" ", "")
+            for file in os.listdir(parent_path+"\io\output"):
+                found_file = file.replace(" ", "")
+                print(search_file)
+                print(found_file)
+                print()
+                if fnmatch.fnmatch(found_file, search_file):
+                    shutil.copy(parent_path+"\io\output\\"+file, file)
+                    break
+        os.chdir("..")
+    os.chdir(parent_path)
+
+def create_organizer_folders():
+    organizerFiles = {}
+    turfs = get_entries()
+    for turf in turfs:
+        first_name = turf['first_name']
+        turf_name = turf['turf_name']
+        organizer_email = turf['organizer_email_address']
+        filename = turf_name + " " + first_name
+        if organizer_email in organizerFiles:
+            organizerFiles[organizer_email] += [filename]
         else:
-            lnum = '0-0'
-            lname, date_part = filename.split("_2020", 1)
-        reg = re.search(".*(Turf [0-9]+)",lname)
-        lname = reg.group()
-        if lname.count("Turf") > 1:
-            lname = lname[lname.find("Turf")]
-        list_dict[lname] = {
-            'list_number' : lnum,
-            'door_count' : doors,
-            'person_count' : people,
-            'date_generated' : date,
-            'turf_name' : lname,
-        }
-    return list_dict
+            organizerFiles[organizer_email] = [filename]
+    create_folders(organizerFiles, "Organizers")
