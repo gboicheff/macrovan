@@ -15,8 +15,12 @@ if __name__ == '__main__':
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200901125934_35_files'
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200919022945_20_files'
     #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\PDFExports_20200921142023_357_files'
-    path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files'
+    #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files'
     # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\VBM files
+    #path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\FULL lists'
+    # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\FULL lists
+    path = r'D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\turfs_10_10_20'
+    # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\turfs_10_10_20
     #pdf_file_names = get_fnames(path)
     #print('pdf_file_names = ', pdf_file_names)
     # P123 -vbm Turf 26 Hermitage.pdf
@@ -47,5 +51,9 @@ if __name__ == '__main__':
 
 
     df = pd.DataFrame(pdf_dict).transpose()
-    write_path = r'..\io\Output\PDFs\VBM files\List Numbers.xlsx'
+    #df = df[df['organizer_email'].notna()]
+    # write_path = r'..\io\Output\PDFs\VBM files\List Numbers.xlsx'
+    #write_path = r'..\io\Output\PDFs\FULL lists\List Numbers.xlsx'
+    write_path = r'..\io\Output\PDFs\turfs_10_10_20\List Numbers.xlsx'
+    # D:\Stuff\Projects\Pol\macrovan\io\Output\PDFs\FULL lists
     write_excel(write_path, df)
