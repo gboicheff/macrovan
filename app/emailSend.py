@@ -178,7 +178,7 @@ def send_files():
     dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
     # dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
-    turfs = get_entries()
+    turfs = get_volunteer_data()
     session = initialize_session()
     organizerFiles = {}
     success = True
@@ -187,7 +187,7 @@ def send_files():
     sent_file = open("emails.txt", "w")
     for turf in turfs:
         print("-------------------------------------------")
-        if turf['send_email'] == "Yes" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name']):
+        if turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name']):
             first_name = turf['first_name']
             last_name = turf['last_name']
             turf_name = turf['turf_name']

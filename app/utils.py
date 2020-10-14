@@ -411,7 +411,104 @@ def get_turfs():
     return turfs
 
 
-def get_entries():
+def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"):
+    # Had to use full path to get it to work for me.
+    #fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    #fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
+    # Nov 2020 -Tracking All Voters 20201011
+    # #print('Path string in get_volunteer_data = ', path)
+    print('os.getcwd = ', os.getcwd())
+    #df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
+    df = pd.read_excel(fname, sheet_name="Ready to run Reports")
+
+    volunteer_data = []
+    count = 0
+    # todo: fix count and unused turf iterator
+    for org_email in df['Organizer Email'].values:
+
+        # Ugly but gets the job done. Would be cleaner with a function:
+        if 'Send to BC' in df.columns:
+            email_to_bc = df['Send an Email to BC?'].values[count].lower()
+            #print('email_to_bc[0] = ', email_to_bc[0])
+            email_to_bc = email_to_bc[0]
+        else:
+            email_to_bc = ''
+
+        if 'Send to Organizer' in df.columns:
+            email_to_org = df['Send to Organizer?'].values[count].lower()
+            email_to_org = email_to_org[0]
+            #print(email_to_org)
+        else:
+            email_to_org = ''
+
+        if 'Want door hangers' in df.columns:
+            want_door_hangers = df['Want door hangers'].values[count].lower()
+            #print('email_to_bc[0] = ', email_to_bc[0])
+            want_door_hangers = want_door_hangers[0]
+        else:
+            want_door_hangers = ''
+
+        if 'Organizer Email' in df.columns:
+            organizer_email = df['Organizer Email'].values[count]
+            if organizer_email != organizer_email:
+                print('organizer_email = nan')
+                organizer_email = ''
+        else:
+            organizer_email = ''
+
+        if 'Org Phone' in df.columns:
+            organizer_phone = df['Org Phone'].values[count]
+        else:
+            organizer_phone = ''
+
+        if 'Org Name' in df.columns:
+            organizer_name = df['Org Name'].values[count]
+        else:
+            organizer_name = ''
+
+        if 'BC First Name' in df.columns:
+            first_name = df['BC First Name'].values[count]
+        else:
+            first_name = ''
+
+        if 'BC Last Name' in df.columns:
+            last_name = df['BC Last Name'].values[count]
+        else:
+            last_name = ''
+
+        if 'Name in VAN' in df.columns:
+            turf_name_in_van = df['Name in VAN'].values[count]
+        else:
+            turf_name_in_van = ''
+
+        if 'Total Voters' in df.columns:
+            total_voters = df['Total Voters'].values[count]
+        else:
+            total_voters = ''
+
+        if 'BC Email' in df.columns:
+            bc_email_address = df['BC Email'].values[count]
+        else:
+            bc_email_address = ''
+
+        volunteer_data.append({
+            "email_to_bc": email_to_bc,
+            "email_to_org": email_to_org,
+            "want_door_hangers": want_door_hangers,
+            "first_name": str(first_name),
+            "last_name": str(last_name),
+            "email_address": str(bc_email_address),
+            "organizer_email_address": str(organizer_email),
+            "organizer_phone": organizer_phone,
+            "organizer_name": str(organizer_name),
+            "turf_name_in_van": str(turf_name_in_van),
+            "total_voters": total_voters
+        })
+        count += 1
+    return volunteer_data
+
+
+def get_entries_old():
     # THERE ARE BREAKING CHANGES HERE SINCE USED BY BOTH emailsend and read_pdf but should be repairable
     # Main issue now is sometimes we have phone numbers etc sometimes we don't
     # MT also renamed some tokens for clarity
@@ -424,13 +521,13 @@ def get_entries():
     #fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20200926.xlsx"
     fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
     # Nov 2020 -Tracking All Voters 20201011
-    # #print('Path string in get_entries = ', path)
+    # #print('Path string in get_volunteer_data = ', path)
     print('os.getcwd = ', os.getcwd())
     #df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
     df = pd.read_excel(fname, sheet_name="Ready to run Reports")
     #print("df['Organizer'].values = ", df['Organizer'].values)
     #print("df['Organizer Email'].values = ", df['Organizer Email'].values)
-    organizer_data = []
+    volunteer_data = []
     count = 0
     # todo: fix count and unused turf iterator
     for org_email in df['Organizer Email'].values:
@@ -458,7 +555,7 @@ def get_entries():
                 # building = df['Bldg Name'].values[count]
                 bc_email_address = df['BC Email'].values[count]
                 # email_address = df['Email to:'].values[count]                
-                organizer_data.append({
+                volunteer_data.append({
                     "yes" : send_email,
                     "first_name" : str(first_name),
                     "last_name" : str(last_name),
@@ -474,19 +571,20 @@ def get_entries():
                     # "message" : type_dict[pdf_type]
                 })
         count += 1
-    return organizer_data
+    return volunteer_data
 
 
 def get_organizer_turfs_dict():
-    organizer_data = get_entries()
-    organizer_dict = {}
-    for turf in organizer_data:
+    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
+    volunteer_data = get_volunteer_data(fname)
+    volunteer_dict = {}
+    for turf in volunteer_data:
         turf_name_in_van = turf["turf_name_in_van"]
         organizer_email = turf["organizer_email_address"]
         name = turf["first_name"]
-        organizer_dict[turf_name_in_van] = organizer_email
+        volunteer_dict[turf_name_in_van] = organizer_email
         #print('turf_name_in_van = ' + turf_name_in_van + ', organizer_email = ' + organizer_email)
-    return organizer_dict  
+    return volunteer_dict
 
 
 def get_fnames(path):
@@ -516,11 +614,11 @@ def extract_pdf_info(path=r'io\Output'):
     pdf_files = get_fnames(path)
     print('pdf_files = ', pdf_files)
 
-    #organizer_dict = get_organizer_turfs_dict()
+    #volunteer_dict = get_organizer_turfs_dict()
     pdf_dict = {}
 
     for filename in pdf_files:
-        print('pdf filename = ', filename)
+        #print('pdf filename = ', filename)
         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
         pdfFileObj = open(path + '\\' + filename, 'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
@@ -617,7 +715,7 @@ def create_folders(folder_dict, parent_folder_name):
 
 def create_organizer_folders():
     organizerFiles = {}
-    turfs = get_entries()
+    turfs = get_volunteer_data()
     for turf in turfs:
         first_name = turf['first_name']
         turf_name = turf['turf_name']
