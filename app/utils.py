@@ -508,14 +508,12 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
     return volunteer_data
 
 
-def get_organizer_turfs_dict():
-    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
+def get_organizer_turfs_dict(fname):
     volunteer_data = get_volunteer_data(fname)
     volunteer_dict = {}
     for turf in volunteer_data:
         turf_name_in_van = turf["turf_name_in_van"]
         organizer_email = turf["organizer_email_address"]
-        name = turf["first_name"]
         volunteer_dict[turf_name_in_van] = organizer_email
         #print('turf_name_in_van = ' + turf_name_in_van + ', organizer_email = ' + organizer_email)
     return volunteer_dict
@@ -584,43 +582,6 @@ def extract_pdf_info(path=r'io\Output'):
             #'organizer_email': organizer_email
         }
     return pdf_dict
-
-# def extract_list_info_email(path=r'io\Output'):
-#     # Loop through all the PDF files.
-#     #path = r'io\Output'
-#     pdf_files = get_fnames(path)
-#     list_dict = {}
-#     for filename in pdf_files:
-#         #pdfFileObj = open(r'io\Output\\' + filename, 'rb')
-#         pdfFileObj = open(path + '\\' + filename, 'rb')
-#         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-#         page = pdfReader.getPage(0).extractText()
-#         first_part, doors = page.split("Doors:", 1)
-#         date, people = page.split("People:", 1)
-#         date = date.split("Generated")[1]
-#         date = date.split(" ")[1]
-#         doors = int(doors.split("Affiliation")[0])
-#         people = int(people.split("Affiliation")[0].split()[0])
-#         page = pdfReader.getPage(2).extractText()
-#         # print('Page =', page)
-#         if people != 0:
-#             lname, lnum = page.split("List", 1)
-#             lnum = lnum.split(" ")[1]
-#         else:
-#             lnum = '0-0'
-#             lname, date_part = filename.split("_2020", 1)
-#         reg = re.search(".*(Turf [0-9]+)",lname)
-#         lname = reg.group()
-#         if lname.count("Turf") > 1:
-#             lname = lname[lname.find("Turf")]
-#         list_dict[lname] = {
-#             'list_number' : lnum,
-#             'door_count' : doors,
-#             'person_count' : people,
-#             'date_generated' : date,
-#             'turf_name' : lname,
-#         }
-#     return list_dict
 
 
 #iterate through folder_dict and create a subfolder copying the files over for each organizer

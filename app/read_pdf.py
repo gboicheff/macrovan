@@ -28,8 +28,8 @@ if __name__ == '__main__':
     pdf_dict = extract_pdf_info(path)  # PDF INTERNAL DATA
     # pdf_dict_keys = pdf_dict.keys()  # key is PDF FILE NAME!
     #print('pdf_dict_keys = ', pdf_dict_keys)
-
-    organizer_dict = get_organizer_turfs_dict()  # key is TURF NAME IN VAN!
+    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
+    organizer_dict = get_organizer_turfs_dict(fname)  # key is TURF NAME IN VAN!
     # organizer_dict_keys = organizer_dict.keys()
 
     # Not finding 'P123 -vbm Turf 26 Hermitage' and a few others
