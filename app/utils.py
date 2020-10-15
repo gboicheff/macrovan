@@ -18,6 +18,10 @@ import pandas as pd
 import re
 import fnmatch
 
+pd.set_option('display.max_rows', 1000)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
 def get_os():
     # print(sys.platform)
     if "win" in sys.platform:
@@ -411,15 +415,17 @@ def get_turfs():
     return turfs
 
 
-def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"):
+def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx",
+                       sheet_name="To Deliver - Reports"):
     # Had to use full path to get it to work for me.
-    #fname = r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
-    #fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters 20201011.xlsx"
-    # Nov 2020 -Tracking All Voters 20201011
     # #print('Path string in get_volunteer_data = ', path)
     print('os.getcwd = ', os.getcwd())
-    #df = pd.read_excel(fname, sheet_name="To Deliver - Reports")
-    df = pd.read_excel(fname, sheet_name="Ready to run Reports")
+    df = pd.read_excel(fname, sheet_name)
+    print(f'df.keys = {df.keys()}')
+    #print(f"df['Organizer Email'] = \n {df['Organizer Email'}")
+    df['Organizer Email'] = df['Organizer Email'].str.lower()
+    df['Organizer Email'] = df['Organizer Email'].str.lstrip()
+    df = df.sort_values('Organizer Email')
 
     volunteer_data = []
     count = 0
@@ -428,14 +434,14 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
 
         # Ugly but gets the job done. Would be cleaner with a function:
         if 'Send to BC' in df.columns:
-            email_to_bc = df['Send an Email to BC?'].values[count].lower()
-            #print('email_to_bc[0] = ', email_to_bc[0])
+            email_to_bc = df['Send to BC'].values[count].lower()
+            #print(f'email_to_bc[0] = {email_to_bc[0]}')
             email_to_bc = email_to_bc[0]
         else:
             email_to_bc = ''
 
         if 'Send to Organizer' in df.columns:
-            email_to_org = df['Send to Organizer?'].values[count].lower()
+            email_to_org = df['Send to Organizer'].values[count].lower()
             email_to_org = email_to_org[0]
             #print(email_to_org)
         else:
@@ -477,8 +483,10 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
             last_name = ''
 
         if 'Name in VAN' in df.columns:
+            #print("df['Name in VAN'].values[count] = ", df['Name in VAN'].values[count])
             turf_name_in_van = df['Name in VAN'].values[count]
         else:
+            print('No Name in VAN')
             turf_name_in_van = ''
 
         if 'Total Voters' in df.columns:
@@ -586,38 +594,72 @@ def extract_pdf_info(path=r'io\Output'):
 
 #iterate through folder_dict and create a subfolder copying the files over for each organizer
 def create_folders(folder_dict, parent_folder_name):
-    parent_path = os.getcwd()
+    #parent_path = os.getcwd()
+    parent_path = r'D:\Stuff\Projects\Pol\macrovan\io\Output'
+    print('parent_path', parent_path)
+    os.chdir(parent_path)
+    print('os.getcwd() = ', os.getcwd())
     if(os.path.isdir(parent_folder_name)):
         shutil.rmtree(parent_folder_name)
     os.mkdir(parent_folder_name)
     os.chdir(parent_folder_name)
-    for subfolder in folder_dict:
-        os.mkdir(subfolder)
+    print('os.getcwd() = ', os.getcwd())
+    print('parent_folder_name = ', parent_folder_name)
+    print('folder_dict keys = ', folder_dict.keys())
+    #for subfolder in folder_dict:
+    for key in folder_dict.keys():
+        # if key == '':
+        #     key = 'no_org'
+        #     folder_dict['no_org'] = 'no_org'
+        subfolder = key
+        #print('subfolder = ', subfolder)
+        if(os.path.isdir(subfolder)):
+            print('ISDIR: Subfolder Exists')
+            print(f'os.getcwd() = {os.getcwd()}\n Subfolder = {subfolder} EXISTS')
+            continue
+        else:
+            os.mkdir(subfolder)
         os.chdir(subfolder)
+        #print(f'chdir(subfolder) os.getcwd() = {os.getcwd()}')
         for file in folder_dict[subfolder]:
             search_file = file + "*" + ".pdf"
             search_file = search_file.replace(" ", "")
-            for file in os.listdir(parent_path+"\io\output"):
+            file_found = 'No'
+            #for file in os.listdir(parent_path+"\io\output"):
+            for file in os.listdir(parent_path+r"\tests"):
                 found_file = file.replace(" ", "")
-                print(search_file)
-                print(found_file)
-                print()
+                #print('search_file = ', search_file)
+                #print('found_file = ', found_file)
                 if fnmatch.fnmatch(found_file, search_file):
-                    shutil.copy(parent_path+"\io\output\\"+file, file)
+                    #print('Matched files', found_file)
+                    #print()
+                    #shutil.copy(parent_path+r"\app\io\output\\tests\"+file, file)
+                    shutil.copy(parent_path + r'\\tests\\' + file, file)
+                    file_found = 'Yes'
                     break
+            if file_found != 'Yes':
+                print(f"For Organizer: {subfolder}\nWARNING SEARCH FILE {search_file} NOT FOUND!")
         os.chdir("..")
     os.chdir(parent_path)
 
-def create_organizer_folders():
+def create_organizer_folders(fname, sheet_name):
     organizerFiles = {}
-    turfs = get_volunteer_data()
+    turfs = get_volunteer_data(fname, sheet_name)
     for turf in turfs:
-        first_name = turf['first_name']
-        turf_name = turf['turf_name']
+        turf_name = turf['turf_name_in_van']
         organizer_email = turf['organizer_email_address']
-        filename = turf_name + " " + first_name
-        if organizer_email in organizerFiles:
-            organizerFiles[organizer_email] += [filename]
+        #print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']} testing")
+        if turf['email_to_org'] == 'y':
+            #print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']}")
+            if organizer_email != organizer_email:
+                organizer_email = 'no_org'
+            filename = turf_name
+            if organizer_email in organizerFiles:
+                organizerFiles[organizer_email] += [filename]
+            else:
+                organizerFiles[organizer_email] = [filename]
+                #print('organizer_email = ', organizer_email)
         else:
-            organizerFiles[organizer_email] = [filename]
+            print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']} ABORTED!")
+            continue
     create_folders(organizerFiles, "Organizers")
