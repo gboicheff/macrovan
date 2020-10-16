@@ -440,12 +440,12 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
         else:
             email_to_bc = ''
 
-        if 'Send to Organizer' in df.columns:
-            email_to_org = df['Send to Organizer'].values[count].lower()
-            email_to_org = email_to_org[0]
-            #print(email_to_org)
+        if 'Zip to Organizer' in df.columns:
+            zip_to_org = df['Zip to Organizer'].values[count].lower()
+            zip_to_org = zip_to_org[0]
+            #print(zip_to_org)
         else:
-            email_to_org = ''
+            zip_to_org = ''
 
         if 'Want door hangers' in df.columns:
             want_door_hangers = df['Want door hangers'].values[count].lower()
@@ -501,7 +501,7 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
 
         volunteer_data.append({
             "email_to_bc": email_to_bc,
-            "email_to_org": email_to_org,
+            "zip_to_org": zip_to_org,
             "want_door_hangers": want_door_hangers,
             "first_name": str(first_name),
             "last_name": str(last_name),
@@ -642,9 +642,9 @@ def create_organizer_folders(fname, sheet_name):
         turf_name = turf['turf_name_in_van']
         organizer_email = turf['organizer_email_address']
         # PRINT to show emails flagged TO SEND TO ORG
-        print(f"create_organizer_folders: For Org = {organizer_email}, email_to_org = {turf['email_to_org']}"
+        print(f"create_organizer_folders: For Org = {organizer_email}, zip_to_org = {turf['zip_to_org']}"
               f"\n\tEMAIL SENT for turf_name = {turf_name}")
-        if turf['email_to_org'] == 'y':
+        if turf['zip_to_org'] == 'y':
             if organizer_email != organizer_email:
                 organizer_email = 'no_org'
             filename = turf_name
@@ -654,7 +654,7 @@ def create_organizer_folders(fname, sheet_name):
                 organizerFiles[organizer_email] = [filename]
         else:
             # PRINT to show emails flagged DO NOT SEND TO ORG
-            print(f"create_organizer_folders: For Org = {organizer_email}, email_to_org = {turf['email_to_org']}"
+            print(f"create_organizer_folders: For Org = {organizer_email}, zip_to_org = {turf['zip_to_org']}"
                   f"\n\tSo EMAIL ABORTED for turf_name = {turf_name}!")
             continue
     create_folders(organizerFiles, "Organizers")
