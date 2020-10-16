@@ -419,7 +419,7 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
                        sheet_name="To Deliver - Reports"):
     # Had to use full path to get it to work for me.
     # #print('Path string in get_volunteer_data = ', path)
-    print('os.getcwd = ', os.getcwd())
+    print(f'get_volunteer_data: os.getcwd = {os.getcwd()}')
     df = pd.read_excel(fname, sheet_name)
     print(f'df.keys = {df.keys()}')
     #print(f"df['Organizer Email'] = \n {df['Organizer Email'}")
@@ -594,25 +594,19 @@ def extract_pdf_info(path=r'io\Output'):
 
 #iterate through folder_dict and create a subfolder copying the files over for each organizer
 def create_folders(folder_dict, parent_folder_name):
-    #parent_path = os.getcwd()
     parent_path = r'D:\Stuff\Projects\Pol\macrovan\io\Output'
-    print('parent_path', parent_path)
+    print(f'create_folders: parent_path = {parent_path}')
     os.chdir(parent_path)
-    print('os.getcwd() = ', os.getcwd())
+    print(f'create_folders: os.getcwd = {os.getcwd()}')
     if(os.path.isdir(parent_folder_name)):
         shutil.rmtree(parent_folder_name)
     os.mkdir(parent_folder_name)
     os.chdir(parent_folder_name)
-    print('os.getcwd() = ', os.getcwd())
-    print('parent_folder_name = ', parent_folder_name)
-    print('folder_dict keys = ', folder_dict.keys())
-    #for subfolder in folder_dict:
+    print(f'create_folders: os.getcwd = {os.getcwd()}')
+    print(f'create_folders: parent_folder_name = {parent_folder_name}')
+    print(f'create_folders: folder_dict keys =\n {folder_dict.keys()}')
     for key in folder_dict.keys():
-        # if key == '':
-        #     key = 'no_org'
-        #     folder_dict['no_org'] = 'no_org'
         subfolder = key
-        #print('subfolder = ', subfolder)
         if(os.path.isdir(subfolder)):
             print('ISDIR: Subfolder Exists')
             print(f'os.getcwd() = {os.getcwd()}\n Subfolder = {subfolder} EXISTS')
@@ -625,7 +619,6 @@ def create_folders(folder_dict, parent_folder_name):
             search_file = file + "*" + ".pdf"
             search_file = search_file.replace(" ", "")
             file_found = 'No'
-            #for file in os.listdir(parent_path+"\io\output"):
             for file in os.listdir(parent_path+r"\tests"):
                 found_file = file.replace(" ", "")
                 #print('search_file = ', search_file)
@@ -648,9 +641,10 @@ def create_organizer_folders(fname, sheet_name):
     for turf in turfs:
         turf_name = turf['turf_name_in_van']
         organizer_email = turf['organizer_email_address']
-        #print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']} testing")
+        # PRINT to show emails flagged TO SEND TO ORG
+        print(f"create_organizer_folders: For Org = {organizer_email}, email_to_org = {turf['email_to_org']}"
+              f"\n\tEMAIL SENT for turf_name = {turf_name}")
         if turf['email_to_org'] == 'y':
-            #print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']}")
             if organizer_email != organizer_email:
                 organizer_email = 'no_org'
             filename = turf_name
@@ -658,8 +652,9 @@ def create_organizer_folders(fname, sheet_name):
                 organizerFiles[organizer_email] += [filename]
             else:
                 organizerFiles[organizer_email] = [filename]
-                #print('organizer_email = ', organizer_email)
         else:
-            print(f"For Org {organizer_email}, 'turf_name:{turf_name} 'email_to_org:{turf['email_to_org']} ABORTED!")
+            # PRINT to show emails flagged DO NOT SEND TO ORG
+            print(f"create_organizer_folders: For Org = {organizer_email}, email_to_org = {turf['email_to_org']}"
+                  f"\n\tSo EMAIL ABORTED for turf_name = {turf_name}!")
             continue
     create_folders(organizerFiles, "Organizers")
