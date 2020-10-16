@@ -16,10 +16,10 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
+testMode = True
 
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = True
+dont_want_to_watch = False
 
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
@@ -175,8 +175,8 @@ def input_choice():
 
 
 def send_files():
-    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    # dev_cc_list = ["gboicheff@gmail.com"]
+    # dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
+    dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_volunteer_data()
     session = initialize_session()
@@ -187,20 +187,17 @@ def send_files():
     sent_file = open("emails.txt", "w")
     for turf in turfs:
         print("-------------------------------------------")
-        if turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name']):
+        if not pd.isnull(turf['email_to_bc']) and turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name_in_van']):
             first_name = turf['first_name']
             last_name = turf['last_name']
-            turf_name = turf['turf_name']
+            turf_name = turf['turf_name_in_van']
             receiver_address = turf['email_address'].rstrip().replace(" ", "")
-            organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
+            # organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
             # receiver_address = 'gboicheff@gmail.com'
             # organizer_email = 'gboicheff@gmail.com'
-            final_cc_list = dev_cc_list + [organizer_email]
+            # final_cc_list = dev_cc_list + [organizer_email]
+            final_cc_list = dev_cc_list
             filename = turf_name
-            if organizer_email in organizerFiles:
-                organizerFiles[organizer_email] += [filename]
-            else:
-                organizerFiles[organizer_email] = [filename]
             print(turf_name)
             print("Send email to " + first_name + " " + last_name + " at " + receiver_address)
             print("CCing: " + str(final_cc_list))
@@ -242,7 +239,6 @@ def send_files():
     sent_file.close()
     for entry in sent_list:
         print(entry)
-    # create_folders(organizerFiles, "Organizers")
     
 
 if __name__ == '__main__':
