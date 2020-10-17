@@ -414,6 +414,13 @@ def get_turfs():
         count += 1
     return turfs
 
+def key_check(df, key):
+    if key in df.columns:
+        df[key] = df[key].values
+    else:
+        df[key] = ' '
+    return df
+
 
 def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx",
                        sheet_name="To Deliver - Reports"):
@@ -433,26 +440,18 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
     for org_email in df['Organizer Email'].values:
 
         # Ugly but gets the job done. Would be cleaner with a function:
-        if 'Send to BC' in df.columns:
-            email_to_bc = df['Send to BC'].values[count].lower()
-            #print(f'email_to_bc[0] = {email_to_bc[0]}')
-            email_to_bc = email_to_bc[0]
-        else:
-            email_to_bc = ''
+        df = key_check(df, 'Send to BC')
+        email_to_bc = df['Send to BC'].values[count].lower()
+        email_to_bc = email_to_bc[0]
 
-        if 'Zip to Organizer' in df.columns:
-            zip_to_org = df['Zip to Organizer'].values[count].lower()
-            zip_to_org = zip_to_org[0]
-            #print(zip_to_org)
-        else:
-            zip_to_org = ''
+        df = key_check(df, 'Zip to Organizer')
+        zip_to_org = df['Zip to Organizer'].values[count].lower()
+        zip_to_org = zip_to_org[0]
 
-        if 'Want door hangers' in df.columns:
-            want_door_hangers = df['Want door hangers'].values[count].lower()
-            #print('email_to_bc[0] = ', email_to_bc[0])
-            want_door_hangers = want_door_hangers[0]
-        else:
-            want_door_hangers = ''
+        df = key_check(df, 'Want door hangers')
+        want_door_hangers = df['Want door hangers'].values[count].lower()
+        #print('email_to_bc[0] = ', email_to_bc[0])
+        want_door_hangers = want_door_hangers[0]
 
         if 'Organizer Email' in df.columns:
             organizer_email = df['Organizer Email'].values[count]
