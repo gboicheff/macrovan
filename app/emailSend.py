@@ -10,18 +10,20 @@ from utils import *
 import shutil
 import time
 
-path = "../macrovan/io/Output/"
+#path = "../macrovan/io/Output/"
+path = "../io/Output\PDFs/email_send/"
 inputPath = "../macrovan/io/Input/"
 emailSubject = "Turf PDF"
 sender_address = email_address
 sender_pass = email_password
-
+print(f'START: os.getcwd = {os.getcwd()}')
 # Set this to False to actually send the emails
-testMode = True
+testMode = False
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
 dont_want_to_watch = True
 
-with open("app/email_body.txt", "r") as body:
+#with open("app/email_body.txt", "r") as body:
+with open("email_body.txt", "r") as body:
     email_body = body.read()
 
 def initialize_session():
@@ -98,7 +100,8 @@ def send_email(receiver_addresses, email, session):
         print("Test mode is on.  Email not sent")
 
 #Extract info from a single pdf
-def get_pdf_info(file_name, path=r'io\Output'):
+#def get_pdf_info(file_name, path=r'io\Output'):
+def get_pdf_info(file_name, path=r'..\io\Output\PDFs\email_send'):
     pdfFileObj = open(path + '\\' + file_name, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     page = pdfReader.getPage(0).extractText()
@@ -222,10 +225,14 @@ def get_organizer_name(email):
     return organizer_dict[email]
 
 def send_files():
-    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com", "fahygotv@gmail.com", "dave@weegallery.com", "stephenpeeples@mac.com"]
-    # dev_cc_list = ["gboicheff@gmail.com"]
+    #dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com", "fahygotv@gmail.com", "dave@weegallery.com", "stephenpeeples@mac.com"]
+    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com", "stephenpeeples@mac.com"]
+    #dev_cc_list = ["mjturtora@gmail.com", "gboicheff@gmail.com"]
     print("==================================================")
-    turfs = get_volunteer_data()
+    #fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx"
+    fname = r"D:\Stuff\Projects\Pol\macrovan\io\Input\Nov 2020 -Tracking All Voters - blocked.xlsx"
+
+    turfs = get_volunteer_data(fname)
     session = initialize_session()
     success = True
     sent_count = 0
@@ -242,8 +249,12 @@ def send_files():
             turf['organizer_name'] = get_organizer_name(turf['organizer_email_address'].rstrip().lstrip().replace(" ", ""))
             receiver_address = turf['email_address'].rstrip().lstrip().replace(" ", "")
             organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
+
             #receiver_address = 'gboicheff@gmail.com'
             # organizer_email = 'gboicheff@gmail.com'
+            #receiver_address = 'mjturtora@gmail.com'
+            #organizer_email = 'm@notmail.com'  #'mjturtora@gmail.com'
+
             final_cc_list = dev_cc_list + [organizer_email]
             filename = turf_name
             print(turf_name)
