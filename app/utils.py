@@ -425,7 +425,7 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
     #print(f"df['Organizer Email'] = \n {df['Organizer Email'}")
     df['Organizer Email'] = df['Organizer Email'].str.lower()
     df['Organizer Email'] = df['Organizer Email'].str.lstrip()
-    df = df.sort_values('Organizer Email')
+    # df = df.sort_values('Organizer Email')
 
     volunteer_data = []
     count = 0
@@ -505,11 +505,11 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
             "want_door_hangers": want_door_hangers,
             "first_name": str(first_name),
             "last_name": str(last_name),
-            "email_address": str(bc_email_address),
-            "organizer_email_address": str(organizer_email),
+            "email_address": bc_email_address,
+            "organizer_email_address": organizer_email,
             "organizer_phone": organizer_phone,
             "organizer_name": str(organizer_name),
-            "turf_name_in_van": str(turf_name_in_van),
+            "turf_name_in_van": turf_name_in_van,
             "total_voters": total_voters
         })
         count += 1

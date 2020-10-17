@@ -8,6 +8,7 @@ import fnmatch
 import datetime
 from utils import *
 import shutil
+import time
 
 path = "../macrovan/io/Output/"
 inputPath = "../macrovan/io/Input/"
@@ -16,15 +17,12 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = True
-
+testMode = False
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = False
+dont_want_to_watch = True
 
 with open("app/email_body.txt", "r") as body:
     email_body = body.read()
-# with open("app/email_body_fancy.txt", "r") as fancy_body:
-#     email_body_fancy = fancy_body.read()
 
 def initialize_session():
     if not testMode:
@@ -35,28 +33,30 @@ def initialize_session():
     else:
         print("Session not started.  Test mode is on.")
 
+
 def create_email(receiver_addresses, filenames, cc_list, turf):
-    organizer_attachment_dict = {
-        "janeathom@aol.com" : "Thomas QSG Nov2020.pdf",
-        "andybragg@me.com" : "Bragg QSG Nov2020.pdf",
-        "ssinger1313@gmail.com" : "SingerSkipper QSG Nov2020.pdf",
-        "kdsteinway@gmail.com" : "Steinway QSG Nov2020.pdf",
-        "ezrasinger@gmail.com" : "SingerEzra QSG Nov2020.pdf",
-        "dave@weegallery.com" : "Pinto QSG Nov2020.pdf",
-        "stephenpeeples@mac.com" : "Peeples QSG Nov2020.pdf",
-        "mmckay23@tampabay.rr.com" : "McKay QSG Nov2020.pdf"
-    }
-    list_dict = extract_pdf_info(find_file(filenames[0], True))
+    # organizer_attachment_dict = {
+    #     "janeathom@aol.com" : "Thomas QSG Nov2020.pdf",
+    #     "andybragg@me.com" : "Bragg QSG Nov2020.pdf",
+    #     "ssinger1313@gmail.com" : "SingerSkipper QSG Nov2020.pdf",
+    #     "kdsteinway@gmail.com" : "Steinway QSG Nov2020.pdf",
+    #     "ezrasinger@gmail.com" : "SingerEzra QSG Nov2020.pdf",
+    #     "dave@weegallery.com" : "Pinto QSG Nov2020.pdf",
+    #     "stephenpeeples@mac.com" : "Peeples QSG Nov2020.pdf",
+    #     "mariamckay46@gmail.com" : "McKay QSG Nov2020.pdf"
+    #     # "mmckay23@tampabay.rr.com" : "McKay QSG Nov2020.pdf"
+    # }
+    list_dict = get_pdf_info(find_file(filenames[0], True))
     date = list_dict['date_generated']
     date_1 = datetime.datetime.strptime(date, "%m/%d/%y")
     dt = date_1 + datetime.timedelta(days=30)
     end_date = '{0}/{1}/{2:02}'.format(dt.month, dt.day, dt.year % 100)
     message = MIMEMultipart()
     message['From'] = sender_address
-    message['Subject'] = "Your PDF Named: " + list_dict['turf_name'] + ", Expires On: " + end_date
+    message['Subject'] = "Your PDF Named: " + list_dict['pdf_file_name'] + ", Expires On: " + end_date
     list_number = " - ".join(list_dict['list_number'].split("-"))
     doors = list_dict['door_count']
-    people = list_dict['people_count']
+    people = list_dict['person_count']
     if turf['organizer_phone'] == 0:
         phone = ""
     else:
@@ -67,19 +67,18 @@ def create_email(receiver_addresses, filenames, cc_list, turf):
         total_voters = int(turf['total_voters'])
     if not pd.isnull(turf["first_name"]):
         turf["first_name"].replace(" ", "")
-    body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name'], list_number=list_number, doors=doors, people=people,
+    body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name_in_van'], list_number=list_number, doors=doors, people=people,
     organizer_name=turf['organizer_name'], organizer_phone=phone, total_voters=total_voters, expr_date=end_date,organizer_email=turf['organizer_email_address'])
     message['To'] = ",".join(receiver_addresses)
     if(len(cc_list) > 0):
         message['Cc'] = ",".join(cc_list)
     message.attach(MIMEText(body, 'plain'))
     numAttachedFiles = attachpdfs(filenames, message)
-    if turf['organizer_email_address'].rstrip() in organizer_attachment_dict:
-        print(organizer_attachment_dict[turf['organizer_email_address'].rstrip()])
-        attach_files([organizer_attachment_dict[turf['organizer_email_address'].rstrip()]],message)
-    else:
-        print("Not found!: " + organizer_attachment_dict[turf['organizer_email_address'].rstrip()])
-        print(turf['organizer_email_address'].replace(" ", ""))
+    # if turf['organizer_email_address'].rstrip() in organizer_attachment_dict:
+    #     print(organizer_attachment_dict[turf['organizer_email_address'].rstrip()])
+    #     attach_files([organizer_attachment_dict[turf['organizer_email_address'].rstrip()]],message)
+    # else:
+    #     print("Not found!: " + turf['organizer_email_address'].rstrip())
     if(numAttachedFiles == len(filenames)):
         return message
     else:
@@ -97,6 +96,33 @@ def send_email(receiver_addresses, email, session):
             return True
     else:
         print("Test mode is on.  Email not sent")
+
+#Extract info from a single pdf
+def get_pdf_info(file_name, path=r'io\Output'):
+    pdfFileObj = open(path + '\\' + file_name, 'rb')
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+    page = pdfReader.getPage(0).extractText()
+    first_part, doors = page.split("Doors:", 1)
+    date, people = page.split("People:", 1)
+    date = date.split("Generated")[1]
+    date = date.split(" ")[1]
+    doors = int(doors.split("Affiliation")[0])
+    people = int(people.split("Affiliation")[0].split()[0])
+    page = pdfReader.getPage(2).extractText()
+    if people != 0:
+        pdf_file_name, lnum = page.split("List", 1)
+        lnum = lnum.split(" ")[1]
+    else:
+        lnum = '0-0'
+        pdf_file_name, date_part = file_name.split("_2020", 1)
+    pdf_dict = {
+        'list_number': lnum,
+        'door_count': doors,
+        'person_count': people,
+        'date_generated': date,
+        'pdf_file_name': pdf_file_name,
+    }
+    return pdf_dict
 
 
 def attachpdfs(file_names, email):
@@ -173,30 +199,52 @@ def input_choice():
         print("Please enter (Y/N):")
         return input_choice()
 
+#Name lookup because new sheet doesn't contain organizer names
+def get_organizer_name(email):
+    organizer_dict = {
+        "andybragg@me.com" : "Andy Bragg",
+        "barb.law2020@gmail.com" : "Barb Law",
+        "bryantranslations@gmail.com" : "Bryan Casanas",
+        "charles.walston@gmail.com" : "Charles Walston",
+        "dave@weegallery.com" : "Dave Pinto",
+        "dbrownallen@gmail.com": "Debbie Allen",
+        "ezrasinger@gmail.com" : "Ezra Singer",
+        "freeusa68@gmail.com" : "Sharon Loughry",
+        "janeathom@aol.com" : "Jane Thomas",
+        "kdsteinway@gmail.com" : "Kate Steinway",
+        # "MMCKAY23@tampabay.rr.com" : "Maria McKay",
+        "mariamckay46@gmail.com" : "Maria McKay",
+        "Srogers1080@outlook.com" : "Sara Rogers",
+        "ssinger1313@gmail.com" : "Skipper Singer",
+        "stephenpeeples@mac.com" : "Steve Peeples",
+        "teamvote2020@gmail.com" : "Amy Walsh"
+    }
+    return organizer_dict[email]
 
 def send_files():
-    # dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com"]
-    dev_cc_list = ["gboicheff@gmail.com"]
+    dev_cc_list = ["gboicheff@gmail.com", "mjturtora@gmail.com", "fahygotv@gmail.com", "dave@weegallery.com", "stephenpeeples@mac.com"]
+    # dev_cc_list = ["gboicheff@gmail.com"]
     print("==================================================")
     turfs = get_volunteer_data()
     session = initialize_session()
-    organizerFiles = {}
     success = True
     sent_count = 0
     sent_list = []
     sent_file = open("emails.txt", "w")
     for turf in turfs:
+        time.sleep(5)
         print("-------------------------------------------")
-        if not pd.isnull(turf['email_to_bc']) and turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not pd.isnull(turf['email_address']) and not pd.isnull(turf['turf_name_in_van']):
-            first_name = turf['first_name']
-            last_name = turf['last_name']
+        if not pd.isnull(turf['email_to_bc']) and turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not turf['organizer_email_address'] == "" and not pd.isnull(turf['email_address']) and not turf['email_address'] == "" and not pd.isnull(turf['turf_name_in_van']) and not turf['turf_name_in_van'] == "":
+            print(turf['email_address'])
+            first_name = turf['first_name'].rstrip().lstrip().replace(" ", "")
+            last_name = turf['last_name'].rstrip().lstrip().replace(" ", "")
             turf_name = turf['turf_name_in_van']
-            receiver_address = turf['email_address'].rstrip().replace(" ", "")
-            # organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
-            # receiver_address = 'gboicheff@gmail.com'
+            turf['organizer_name'] = get_organizer_name(turf['organizer_email_address'].rstrip().lstrip().replace(" ", ""))
+            receiver_address = turf['email_address'].rstrip().lstrip().replace(" ", "")
+            organizer_email = turf['organizer_email_address'].rstrip().replace(" ", "")
+            #receiver_address = 'gboicheff@gmail.com'
             # organizer_email = 'gboicheff@gmail.com'
-            # final_cc_list = dev_cc_list + [organizer_email]
-            final_cc_list = dev_cc_list
+            final_cc_list = dev_cc_list + [organizer_email]
             filename = turf_name
             print(turf_name)
             print("Send email to " + first_name + " " + last_name + " at " + receiver_address)
@@ -206,7 +254,7 @@ def send_files():
             print("Found filename: " + find_file(filename, True))
             if dont_want_to_watch or input_choice():
                 email = create_email([receiver_address], [filename], final_cc_list, turf)
-                if not testMode:
+                if not testMode and foundFile != "NOT FOUND":
                     if email != False:
                         all_to_addresses = [receiver_address] + final_cc_list
                         if send_email(all_to_addresses, email, session) != False:
@@ -243,7 +291,3 @@ def send_files():
 
 if __name__ == '__main__':
     send_files()
-    # create_organizer_folders()
-    # #print(extract_list_info())
-    # print(extract_list_info())
-    # print(extract_list_info_email())
