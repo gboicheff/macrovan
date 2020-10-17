@@ -17,7 +17,7 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
+testMode = True
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
 dont_want_to_watch = True
 
@@ -232,7 +232,7 @@ def send_files():
     sent_list = []
     sent_file = open("emails.txt", "w")
     for turf in turfs:
-        time.sleep(5)
+        time.sleep(1.5)
         print("-------------------------------------------")
         if not pd.isnull(turf['email_to_bc']) and turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not turf['organizer_email_address'] == "" and not pd.isnull(turf['email_address']) and not turf['email_address'] == "" and not pd.isnull(turf['turf_name_in_van']) and not turf['turf_name_in_van'] == "":
             print(turf['email_address'])
@@ -276,7 +276,7 @@ def send_files():
                 print("Email to " + first_name + " " + last_name + " not sent")
                 sent_list += [first_name + " " + last_name + " " + receiver_address + " EMAIL NOT SENT"]
                 success = False
-            sent_file.write(turf_name + "                :                " + foundFile + "\n")
+            sent_file.write(turf_name + "                :                " + foundFile + "                :                " + last_name + "\n")
     if not testMode:
         session.quit()
     if success:
