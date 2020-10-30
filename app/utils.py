@@ -415,11 +415,13 @@ def get_turfs():
     return turfs
 
 
-def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020 -Tracking All Voters.xlsx",
+def get_volunteer_data(fname=r"Nov 2020 -Tracking All Voters.xlsx",
                        sheet_name="To Deliver - Reports"):
     # Had to use full path to get it to work for me.
     # #print('Path string in get_volunteer_data = ', path)
     print(f'get_volunteer_data: os.getcwd = {os.getcwd()}')
+    fname = os.path.join(os.getcwd(), "io", "Input", fname)
+    print(fname)
     df = pd.read_excel(fname, sheet_name)
     print(f'df.keys = {df.keys()}')
     #print(f"df['Organizer Email'] = \n {df['Organizer Email'}")
@@ -434,21 +436,21 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
 
         # Ugly but gets the job done. Would be cleaner with a function:
         if 'Send to BC' in df.columns:
-            email_to_bc = df['Send to BC'].values[count].lower()
+            email_to_bc = str(df['Send to BC'].values[count]).lower()
             #print(f'email_to_bc[0] = {email_to_bc[0]}')
             email_to_bc = email_to_bc[0]
         else:
             email_to_bc = ''
 
         if 'Zip to Organizer' in df.columns:
-            zip_to_org = df['Zip to Organizer'].values[count].lower()
+            zip_to_org = str(df['Zip to Organizer'].values[count]).lower()
             zip_to_org = zip_to_org[0]
             #print(zip_to_org)
         else:
             zip_to_org = ''
 
         if 'Want door hangers' in df.columns:
-            want_door_hangers = df['Want door hangers'].values[count].lower()
+            want_door_hangers = str(df['Want door hangers'].values[count]).lower()
             #print('email_to_bc[0] = ', email_to_bc[0])
             want_door_hangers = want_door_hangers[0]
         else:
@@ -463,7 +465,7 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
             organizer_email = ''
 
         if 'Org Phone' in df.columns:
-            organizer_phone = df['Org Phone'].values[count]
+            organizer_phone = str(df['Org Phone'].values[count])
         else:
             organizer_phone = ''
 
@@ -490,7 +492,7 @@ def get_volunteer_data(fname=r"C:\Users\Grant\Desktop\macrovan\io\Input\Nov 2020
             turf_name_in_van = ''
 
         if 'Total Voters' in df.columns:
-            total_voters = df['Total Voters'].values[count]
+            total_voters = int(df['Total Voters'].values[count])
         else:
             total_voters = ''
 
