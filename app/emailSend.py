@@ -107,12 +107,12 @@ def get_pdf_info(file_name, path=r'io\Output'):
     return pdf_dict
 
 
-def attach_files(file_names, path, email):
+def attach_files(file_names, path, email, file_type="pdf"):
     for file in file_names:
         found_file = find_file(file, path)
         if not testMode: 
             pdf = MIMEApplication(open(found_file, 'rb').read())
-            pdf.add_header('Content-Disposition','attachment', filename=found_file)
+            pdf.add_header('Content-Disposition','attachment', filename=file+"."+file_type)
             email.attach(pdf)               
     return email
 
