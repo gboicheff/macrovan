@@ -54,6 +54,10 @@ def top_selections(driver, listName, script_name):
     element = expect_by_id(driver, "ctl00_ContentPlaceHolderVANPage_VANDetailsItemReportTitle_VANInputItemDetailsItemReportTitle_ReportTitle")
     element.clear()
     element.send_keys(listName)
+    print()
+    print(f'listName: {listName}')
+    time.sleep(2)
+
 
 def headers_and_pagebreaks(driver):
     # Deselect headers and page breaks for sort order 1-4

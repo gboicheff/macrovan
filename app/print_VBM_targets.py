@@ -31,6 +31,9 @@ def print_labels(driver, list_name):
                            "ctl00_ContentPlaceHolderVANPage_VANDetailsItemReportTitle_VANInputItemDetailsItemReportTitle_ReportTitle")
     element.clear()
     element.send_keys(list_name)
+    print()
+    print(f'list_name: {list_name}')
+    time.sleep(1)
     #Select format
     select_element = Select(expect_by_id(driver,
                                          "ctl00_ContentPlaceHolderVANPage_VanDetailsItemReportFormatInfo_VANInputItemDetailsItemReportFormatInfo_ReportFormatInfo"))
@@ -80,7 +83,7 @@ if __name__ == '__main__':
 
             if (turf[2] == "List"):
                 print_controller(driver, print_list_name, script_name)
-                time.sleep(1)
+                time.sleep(2)
                 return_to_home(driver)
                 time.sleep(1)
                 list_folders(driver)
