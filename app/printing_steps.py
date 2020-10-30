@@ -1,4 +1,5 @@
 from utils import *
+import time
 
 def open_print(driver):
     # Click the Print List Button
@@ -120,6 +121,7 @@ def print_controller(driver, listName, script_name):
     # pause('click ok when done')
     sort_orders(driver)
     driver.implicitly_wait(20)
+    time.sleep(1.5)
     final_selections_submit(driver)
 
 #     #ACTION ID BUTTON FAIL

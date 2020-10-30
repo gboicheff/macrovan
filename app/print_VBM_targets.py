@@ -1,5 +1,6 @@
 from utils import *
 from printing_steps import *
+import time
 
 path = os.getcwd()
 
@@ -79,9 +80,9 @@ if __name__ == '__main__':
 
             if (turf[2] == "List"):
                 print_controller(driver, print_list_name, script_name)
-                driver.implicitly_wait(15)
+                time.sleep(1)
                 return_to_home(driver)
-                driver.implicitly_wait(15)
+                time.sleep(1)
                 list_folders(driver)
                 select_folder(driver)
             else:
