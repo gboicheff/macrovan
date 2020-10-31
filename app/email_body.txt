@@ -1,6 +1,6 @@
 Hello {bc_first_name},
 
-Thank you again for agreeing to be a block or building captain for this all important election!  
+Thank you once more for all your hard work as a block captain. We have already seen the results of our efforts, and we are ready to make one final push to turn Florida blue!  
 
 
 Your List Vitals:
@@ -8,45 +8,14 @@ Your List Vitals:
 
 Your area is: {turf_name}
 
-There are a total of {total_voters} Democratic and Democratic leaning Independent voters in this area but our focus is on those who have not yet voted. This list is of those voters in your turf that have not voted as of the second weekend of October.
+The attached list is of those voters in your turf that have not voted as of the week of October 27th. These are likely to be either voters who are waiting until Election Day, or who may need help or information to vote. It is crucial that we reach out to this remaining bloc of likely Democratic voters.
 
-Up until {expr_date}, you can enter this number in MiniVAN: {list_number}
+Here is your list number for MiniVAN: {list_number}
 
 # of doors {doors}  -  # of voters {people}
 
 
-The Plan (Details):
-------------------------
-
-Below is an outline of what to expect in the next couple of weeks. 
-
-On Saturday October 17th, we're starting a major push to reach out to any Democratic or Dem leaning voter who has not yet voted. The goal of this push is to encourage them to vote as soon as possible, whether by going to an in-person early voting location, or dropping their mail ballot off at one of the authorized locations. (Early in-person voting officially begins Monday October 19th).
-
-Your Neighborhood Organizer will give you instructions on how to pick up your set of door hangers, and whether or not you will need to insert any extra material in them. 
-
-If you are contacting inaccessible addresses, your organizer will advise you on which pdf you should attach to your text or email. These can be found at https://www.gotvpinellas.org/door-hangers. We also have a flyer, in both electronic and hard copy versions, that has helpful information on how to vote, either by mail or in person.
- 
-If you are dropping literature, again, we strongly encourage a handwritten personal note, visible to the voter. Suggested messages can be found here https://www.gotvpinellas.org/guides-for-volunteers. After you send a text or email, a follow up phone call will add an important personal touch.
- 
-After this, in the last weekend before Election Day, we will plan to do one final outreach. Your neighborhood organizer will be in touch with details.
-
- 
-Finally:
----------
- 
-An important note - these lists were run in the first half of October. There will almost certainly be voters on your list who have in fact voted but were not picked up in time. If you are using MiniVAN, you will see a small blue "v" next to their name, or their name will completely drop off the list. Naturally, you should skip any voter with the blue "v".  (As you probably know, the attached PDF is linked to a MiniVAN list by the list number. MiniVAN is updated daily, so it will always have the most up-to-date information). 
- 
-You can find MiniVAN guides at our NEW website: https://www.gotvpinellas.org/guides 
-
-Or download a PDF directly with: https://bit.ly/3hX37Vu
-
-If you don't use the MiniVAN app, you can mark your results on your printed list and return it to your organizer by Monday October 26.  If you can't finish by then, or need any help please call me.
-
-Please acknowledge receipt by entering your email address in this form: https://forms.gle/kJSzoYkxXb6siBd49 
-
-As always, if you have any questions please forward them to your organizer or hit Reply ALL so they see any questions or responses.
-
-Warm Regards,
+Sincere thanks for all you've done!
 {organizer_name}
 {organizer_phone}
 {organizer_email}

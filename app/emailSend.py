@@ -22,7 +22,7 @@ sender_pass = email_password
 # Set this to False to actually send the emails
 testMode = False
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = True
+dont_want_to_watch = False
 
 
 def read_email_body(file_name):
@@ -48,7 +48,7 @@ def format_date(raw_date):
 
 def insert_turf_email(email_body, turf, list_dict, end_date):
     list_number = " - ".join(list_dict['list_number'].split("-"))
-    body = email_body.format(bc_first_name=turf['first_name'].capitalize(), turf_name=turf['turf_name_in_van'], list_number=list_number, doors=list_dict['door_count'], people=list_dict['person_count'],
+    body = email_body.format(bc_first_name=turf['last_name'].capitalize(), turf_name=turf['turf_name_in_van'], list_number=list_number, doors=list_dict['door_count'], people=list_dict['person_count'],
     organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=turf['total_voters'], expr_date=end_date,organizer_email=turf['organizer_email_address'])
     return body
 
@@ -80,7 +80,7 @@ def send_email(receiver_addresses, email, session):
         return False
 
 #Extract info from a single pdf
-def get_pdf_info(file_name, path=r'io\Output'):
+def get_pdf_info(file_name):
     pdfFileObj = open(file_name, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     page = pdfReader.getPage(0).extractText()
@@ -96,7 +96,8 @@ def get_pdf_info(file_name, path=r'io\Output'):
         lnum = lnum.split(" ")[1]
     else:
         lnum = '0-0'
-        pdf_file_name, date_part = file_name.split("_2020", 1)
+        # pdf_file_name, date_part = file_name.split("_2020", 1)
+        pdf_file_name = os.path.basename(file_name).split("_2020")[0]
     pdf_dict = {
         'list_number': lnum,
         'door_count': doors,
@@ -128,8 +129,6 @@ def find_file(file_name, path, file_type="pdf", ignore_spaces=True):
             foundFile = file.replace(" ", "")
         if fnmatch.fnmatch(foundFile, search_file_name):
             return os.path.join(path, file)
-        # if file_name == file:
-        #      return path + file
     return "NOT FOUND"            
 
 def input_choice():
@@ -161,7 +160,8 @@ def get_organizer_name(email):
         "ssinger1313@gmail.com" : "Skipper Singer",
         "stephenpeeples@mac.com" : "Steve Peeples",
         "teamvote2020@gmail.com" : "Amy Walsh",
-        "gboicheff@gmail.com"   : "Grant"
+        # "gboicheff@gmail.com"   : "Grant",
+        "wfb4cdc-lexus@yahoo.com"  :  "Bill Broom"
     }
     return organizer_dict[email]
 
@@ -178,8 +178,10 @@ def clean_entry(entry, spaces_replace=True):
 
 def clean_turf_date(turf):
     for detail in turf.keys():
-        # print(detail + " " + str(type(turf[detail])))
-        detail = clean_entry(turf[detail])
+        if detail == "turf_name_in_van":
+            turf[detail] = clean_entry(turf[detail], False)
+        else:
+            turf[detail] = clean_entry(turf[detail], True)
     return turf
 
 def display_email_details(turf, file_name, found_file, final_cc_list):
@@ -209,9 +211,9 @@ def send_files(dev_cc_list=["gboicheff@gmail.com"]):
             final_cc_list = dev_cc_list + [turf['organizer_email_address']]
             file_name = turf['turf_name_in_van']
             found_file = find_file(file_name, output_path, "pdf")
+            turf = clean_turf_date(turf)
             turf['found_file_name'] = found_file
             turf['organizer_name'] = get_organizer_name(turf['organizer_email_address'])
-            turf = clean_turf_date(turf)
             display_email_details(turf, file_name, found_file, final_cc_list)
             if dont_want_to_watch or input_choice():
                 if not testMode:
@@ -228,8 +230,8 @@ def send_files(dev_cc_list=["gboicheff@gmail.com"]):
     print("==================================================")
     write_results(sent_list)
     check_sent(sent_list)
+    print(len(sent_list))
     
 
 if __name__ == '__main__':
-    send_files()
-    # send_files(["gboicheff@gmail.com", "mjturtora@gmail.com", "fahygotv@gmail.com", "dave@weegallery.com", "stephenpeeples@mac.com"])
+    send_files(["mjturtora@gmail.com", "dave@weegallery.com", "stephenpeeples@mac.com"])
