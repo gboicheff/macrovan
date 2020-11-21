@@ -20,9 +20,9 @@ sender_address = email_address
 sender_pass = email_password
 
 # Set this to False to actually send the emails
-testMode = False
+testMode = True
 # Set this to true to send all the emails out without stepping. BE CAREFUL WITH THIS
-dont_want_to_watch = False
+dont_want_to_watch = True
 
 
 def read_email_body(file_name):
@@ -46,12 +46,14 @@ def format_date(raw_date):
     dt = date_1 + datetime.timedelta(days=30)
     return '{0}/{1}/{2:02}'.format(dt.month, dt.day, dt.year % 100)
 
+#insert details into an email body and return it as a string
 def insert_turf_email(email_body, turf, list_dict, end_date):
     list_number = " - ".join(list_dict['list_number'].split("-"))
     body = email_body.format(bc_first_name=turf['last_name'].capitalize(), turf_name=turf['turf_name_in_van'], list_number=list_number, doors=list_dict['door_count'], people=list_dict['person_count'],
     organizer_name=turf['organizer_name'], organizer_phone=turf['organizer_phone'], total_voters=turf['total_voters'], expr_date=end_date,organizer_email=turf['organizer_email_address'])
     return body
 
+#build an email
 def create_email(receiver_addresses, filenames, cc_list, turf, email_body_file_name):
     list_dict = get_pdf_info(find_file(filenames[0], output_path))
     end_date = format_date(list_dict['date_generated'])
@@ -67,6 +69,7 @@ def create_email(receiver_addresses, filenames, cc_list, turf, email_body_file_n
     message = attach_files(filenames, output_path, message)
     return message
 
+#sends an email.  Error handling needs work.
 def send_email(receiver_addresses, email, session):
     if not testMode:
         text = email.as_string()
@@ -107,7 +110,7 @@ def get_pdf_info(file_name):
     }
     return pdf_dict
 
-
+#attaches files using a list of filenames (extensions not included).  Only setup to attach lists of a single file type at a time right now
 def attach_files(file_names, path, email, file_type="pdf"):
     for file in file_names:
         found_file = find_file(file, path)
@@ -142,7 +145,7 @@ def input_choice():
         print("Please enter (Y/N):")
         return input_choice()
 
-#Name lookup because new sheet doesn't contain organizer names
+#Name lookup because new sheet doesn't contain organizer names.
 def get_organizer_name(email):
     organizer_dict = {
         "andybragg@me.com" : "Andy Bragg",
@@ -160,11 +163,12 @@ def get_organizer_name(email):
         "ssinger1313@gmail.com" : "Skipper Singer",
         "stephenpeeples@mac.com" : "Steve Peeples",
         "teamvote2020@gmail.com" : "Amy Walsh",
-        # "gboicheff@gmail.com"   : "Grant",
         "wfb4cdc-lexus@yahoo.com"  :  "Bill Broom"
     }
     return organizer_dict[email]
 
+#used to prevent human error in the excel sheet from breaking things
+#removes leading and trailing spaces and by default any inner spaces
 def clean_entry(entry, spaces_replace=True):
     if type(entry) is str:
         entry = entry.rstrip().lstrip()
@@ -176,7 +180,8 @@ def clean_entry(entry, spaces_replace=True):
             return entry
     return entry
 
-def clean_turf_date(turf):
+#apply clean_entry to all information but dont remove inner spaces from turf_name_in_van
+def clean_turf_data(turf):
     for detail in turf.keys():
         if detail == "turf_name_in_van":
             turf[detail] = clean_entry(turf[detail], False)
@@ -190,10 +195,12 @@ def display_email_details(turf, file_name, found_file, final_cc_list):
     print("Expected filename: " + file_name)
     print("Found filename: " + found_file)
 
+#writes a json file containing information about the turfs
 def write_results(turfs):
     with open("email_results" + time.strftime("%Y%m%d-%H%M%S") +".json", "w") as result:
         json.dump(turfs, result, indent=3)
 
+#would be used to check for emails that failed to send but smtplib doesn't throw errors for bounced emails
 def check_sent(turfs):
     for turf in turfs:
         if not bool(turf['email_sent']):
@@ -207,11 +214,12 @@ def send_files(dev_cc_list=["gboicheff@gmail.com"]):
     sent_list = []
     for turf in turfs:
         print("-------------------------------------------")
+        #check for invalid entries
         if not pd.isnull(turf['email_to_bc']) and turf['email_to_bc'] == "y" and not pd.isnull(turf['organizer_email_address']) and not turf['organizer_email_address'] == "" and not pd.isnull(turf['email_address']) and not turf['email_address'] == "" and not pd.isnull(turf['turf_name_in_van']) and not turf['turf_name_in_van'] == "":
             final_cc_list = dev_cc_list + [turf['organizer_email_address']]
             file_name = turf['turf_name_in_van']
             found_file = find_file(file_name, output_path, "pdf")
-            turf = clean_turf_date(turf)
+            turf = clean_turf_data(turf)
             turf['found_file_name'] = found_file
             turf['organizer_name'] = get_organizer_name(turf['organizer_email_address'])
             display_email_details(turf, file_name, found_file, final_cc_list)
@@ -221,6 +229,7 @@ def send_files(dev_cc_list=["gboicheff@gmail.com"]):
                 email = create_email([turf['email_address']], [file_name], final_cc_list, turf, "email_body")
                 all_to_addresses = [turf['email_address']] + final_cc_list
                 success = send_email(all_to_addresses, email, session)
+                #success is almost always true unless you lose internet connection or something.  Bounced emails still return true when sent through smtplib
                 turf['email_sent'] = success
             else:
                 turf['email_sent'] = False
@@ -229,7 +238,7 @@ def send_files(dev_cc_list=["gboicheff@gmail.com"]):
         session.quit()
     print("==================================================")
     write_results(sent_list)
-    check_sent(sent_list)
+    #check_sent(sent_list)
     print(len(sent_list))
     
 
