@@ -10,6 +10,6 @@ if __name__ == '__main__':
     driver = start_driver(os.path.join(path, "chrome-data"))
     get_page(driver)
     driver.implicitly_wait(10)
-    login_to_page(driver)  
+    attempt_login(driver)  
     list_folders(driver)
-    select_folder(driver)
+    select_folder(driver, '//*[text()="Testing"]')

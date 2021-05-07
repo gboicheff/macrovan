@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.remote.command import Command
 import ctypes  # for windows message pop-up
@@ -108,17 +109,13 @@ def login_to_page(driver):
     expect_by_name(driver, "submit").click()
     return
 
+# prevents hanging when login is remembered
 def attempt_login(driver):
-    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']").click()
-    print('After ActionID Button')
-    print_title(driver)
-    #expect_by_id(driver, 'username')
-    #username = expect_by_id(driver, "username")
-    username = expect_by_name(driver, "email")
-    username.send_keys(user_name)
-    password = expect_by_name(driver, "password")
-    password.send_keys(pass_word)
-    expect_by_name(driver, "submit").click()
+    try:
+        expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']", 3)
+        login_to_page(driver)
+    except TimeoutException:
+        print("Already logged in")
     return
 
 
@@ -377,48 +374,41 @@ def display_to_console(x):
     disable_print()
 
 
-def expect_by_id(driver, id_tag):
-    # handle expected conditions by id
-    wait_no_longer_than = 120
+def expect_by_id(driver, id_tag, wait_no_longer_than=120):
     print(f'Expecting {id_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.ID, id_tag)))
     return element
 
 
-def expect_by_XPATH(driver, XPATH):
-    wait_no_longer_than = 120
+def expect_by_XPATH(driver, XPATH, wait_no_longer_than=120):
     print(f'Expecting {XPATH}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.XPATH, XPATH)))
     return element
 
 
-def expect_by_class(driver, class_tag):
-    wait_no_longer_than = 120
+def expect_by_class(driver, class_tag, wait_no_longer_than=120):
     print(f'Expecting {class_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.CLASS_NAME, class_tag)))
     return element
 
 
-def expect_by_css(driver, css_tag):
-    wait_no_longer_than = 120
+def expect_by_css(driver, css_tag, wait_no_longer_than=120):
     print(f'Expecting {css_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, css_tag)))
     return element
 
 
-def expect_by_link_text(driver, link_text):
-    wait_no_longer_than = 120
+def expect_by_link_text(driver, link_text, wait_no_longer_than=120):
     print(f'Expecting {link_text}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.LINK_TEXT, link_text)))
     return element
 
-def expect_by_name(driver, name):
-    wait_no_longer_than = 120
+def expect_by_name(driver, name, wait_no_longer_than=120):
     print(f'Expecting {name}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.NAME, name)))
