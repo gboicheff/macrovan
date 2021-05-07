@@ -13,3 +13,8 @@ if __name__ == '__main__':
     attempt_login(driver)  
     list_folders(driver)
     select_folder(driver, '//*[text()="Testing"]')
+    table = expect_by_tag(driver, "table")
+    row = select_row(driver, table)
+    tbody = expect_by_tag(row, "tbody")
+    edit_button = expect_by_tag(row, "a")
+    edit_button.click()

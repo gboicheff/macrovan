@@ -119,6 +119,10 @@ def attempt_login(driver):
     return
 
 
+def select_row(driver, table, index=0):
+    rows = table.find_elements(By.TAG_NAME, "tr")
+    return rows[index]
+
 def remember_this(driver):
     expect_by_class(driver, "checkbox").click()
     # wait at least long enough to enter code and pin
@@ -412,6 +416,12 @@ def expect_by_name(driver, name, wait_no_longer_than=120):
     print(f'Expecting {name}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.NAME, name)))
+    return element
+
+def expect_by_tag(driver, tag, wait_no_longer_than=120):
+    print(f'Expecting {tag}')
+    element = WebDriverWait(driver, wait_no_longer_than).until(
+        EC.presence_of_element_located((By.TAG_NAME, tag)))
     return element
 
 
