@@ -50,7 +50,7 @@ def pause(message):
     ctypes.windll.user32.MessageBoxW(0, message, "Macrovan", 1)
 
 
-def start_driver():
+def start_driver(data_path="chrome-data"):
     """Initialize Chrome WebDriver with option that saves user-data-dir to local
      folder to handle cookies"""
     # driver.get('chrome://settings/')
@@ -66,7 +66,7 @@ def start_driver():
     # #chrome_options.add_argument("--enable-caret-browsing")
 
     # adding argument causes chrome to open with address bar highlighted and I can't figure out why!
-    chrome_options.add_argument("--user-data-dir=chrome-data")
+    chrome_options.add_argument("--user-data-dir={path}".format(path=data_path))
     chrome_options.add_argument("--disable-notifications")
     chrome_options.add_experimental_option("excludeSwitches", ['enable-logging'])
     chrome_options.add_argument('disable-infobars')
@@ -90,19 +90,35 @@ def get_page(driver):
 def login_to_page(driver):
     # login and initialize:
     # Click ActionID Button to open login
-    element = expect_by_XPATH(driver, '//a[@href="/OpenIdConnectLoginInitiator.ashx?ProviderID=4"]')
+    # element = expect_by_XPATH(driver, '//a[@href="/OpenIdConnectLoginInitiator.ashx?ProviderID=4"]')
     # print(f'ELEMENT = {element}')
 
     # driver.find_element_by_xpath("//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=4']").click()
-    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=4']").click()
+
+    # provider id looks like it was changed to 9 in VAN
+    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']").click()
     print('After ActionID Button')
     print_title(driver)
-    expect_by_id(driver, 'username')
-    username = expect_by_id(driver, "username")
+    #expect_by_id(driver, 'username')
+    #username = expect_by_id(driver, "username")
+    username = expect_by_name(driver, "email")
     username.send_keys(user_name)
-    password = expect_by_id(driver, "password")
+    password = expect_by_name(driver, "password")
     password.send_keys(pass_word)
-    expect_by_class(driver, "btn-blue").click()
+    expect_by_name(driver, "submit").click()
+    return
+
+def attempt_login(driver):
+    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']").click()
+    print('After ActionID Button')
+    print_title(driver)
+    #expect_by_id(driver, 'username')
+    #username = expect_by_id(driver, "username")
+    username = expect_by_name(driver, "email")
+    username.send_keys(user_name)
+    password = expect_by_name(driver, "password")
+    password.send_keys(pass_word)
+    expect_by_name(driver, "submit").click()
     return
 
 
@@ -118,12 +134,12 @@ def list_folders(driver):
     print('AFTER FOLDER LIST CLICK')
 
 
-def select_folder(driver):
+def select_folder(driver, folder_name='//*[text()="2020 District 68 November"]'):
     """select folder"""
     print('Select Folder')
     # driver.find_element_by_xpath('//*[text()="District 68 2020 3/17 Primary/Municipals"]').click()
     # expect_by_XPATH(driver, '//*[text()="2020 District 68"]').click()
-    expect_by_XPATH(driver, '//*[text()="2020 District 68 November"]').click()
+    expect_by_XPATH(driver, folder_name).click()
     print_title(driver)
 
 
@@ -399,6 +415,13 @@ def expect_by_link_text(driver, link_text):
     print(f'Expecting {link_text}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.LINK_TEXT, link_text)))
+    return element
+
+def expect_by_name(driver, name):
+    wait_no_longer_than = 120
+    print(f'Expecting {name}')
+    element = WebDriverWait(driver, wait_no_longer_than).until(
+        EC.presence_of_element_located((By.NAME, name)))
     return element
 
 
