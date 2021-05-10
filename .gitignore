@@ -139,3 +139,4 @@ dmypy.json
 .pyre/
 emails.txt
 app/src.txt
+regions.pkl
