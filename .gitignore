@@ -140,3 +140,4 @@ dmypy.json
 emails.txt
 app/src.txt
 regions.pkl
+api_key.json
