@@ -141,3 +141,5 @@ emails.txt
 app/src.txt
 regions.pkl
 api_key.json
+client_secret.json
+app/sample.py

@@ -1,8 +1,10 @@
 from utils import *
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import time
 import pickle
 import random
+
+
 
 path = os.getcwd()
 print(f"The current working directory is {path}")
@@ -29,6 +31,11 @@ class MapRegion:
         MAILBOXES:{m_boxes}
         """.format(id = self.ID, name=self.NAME, people=self.PEOPLE, h_phones = self.HOME_PHONES, p_phones = self.PREFERRED_PHONES, doors = self.DOORS, m_boxes = self.MAILBOXES)
         print(output)
+    
+    def flatten(self):
+        flattened_region = dict([("ID", self.ID), ("Name", self.NAME), ("People", self.PEOPLE), ("Home Phone Ct", self.HOME_PHONES), ("Pref Phone Ct", self.PREFERRED_PHONES), ("Doors", self.DOORS), ("Mailboxes",
+        self.MAILBOXES)])
+        return flattened_region
 
 
 
