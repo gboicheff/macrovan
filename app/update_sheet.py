@@ -32,14 +32,16 @@ class MapRegionManager:
         for region in regions:
             id = region.ID
             try:
-                index = self.conv_index(cell_mappings[id])  
+                index = self.conv_index(cell_mappings[id])
+                self.update_row(region, index)
             # row doesn't exist yet
             except KeyError:
                 # this might be slow
                 end_index+=1
                 index = end_index
+                wks.append_table(values = list(region.flatten().values()), start="A1", end="G{}".format(end_index))
             print("index:{}".format(index))
-            self.update_row(region, index)
+            # self.update_row(region, index)
 
     def conv_index(self, address):
         index = int("".join([a for a in str(address) if not a.isalpha()]))
