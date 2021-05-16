@@ -3,8 +3,8 @@ from utils import *
 import time
 import pickle
 import random
-
-
+import sys
+import os
 
 path = os.getcwd()
 print(f"The current working directory is {path}")
@@ -31,24 +31,50 @@ class MapRegion:
         MAILBOXES:{m_boxes}
         """.format(id = self.ID, name=self.NAME, people=self.PEOPLE, h_phones = self.HOME_PHONES, p_phones = self.PREFERRED_PHONES, doors = self.DOORS, m_boxes = self.MAILBOXES)
         print(output)
+
+    def get_precinct(self):
+        try:
+            name = self.NAME
+            name_part = self.NAME.split()[0]
+            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
+        except:
+            num = "ERROR"
+        return num
+
+    def get_turf_precinct(self):
+        try:
+            name = self.NAME
+            name_part = self.NAME.split()[1]
+            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
+        except:
+            num = "ERROR"
+        return num
+
+    def get_turf(self):
+        try:
+            name_part = self.NAME.split()[-1]
+            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
+        except:
+            num = "ERROR"
+        return num
+
     
     def flatten(self):
-        flattened_region = dict([("ID", self.ID), ("Name", self.NAME), ("People", self.PEOPLE), ("Home Phone Ct", self.HOME_PHONES), ("Pref Phone Ct", self.PREFERRED_PHONES), ("Doors", self.DOORS), ("Mailboxes",
-        self.MAILBOXES)])
+        flattened_region = dict([("ID", self.ID), ("Name", self.NAME), ("People", self.PEOPLE), ("Home Phone Ct", self.HOME_PHONES), ("Pref Phone Ct", self.PREFERRED_PHONES),
+        ("Doors", self.DOORS), ("Mailboxes", self.MAILBOXES)])
         return flattened_region
 
 
-
-if __name__ == '__main__':
-
-    teardown()
-    driver = start_driver(os.path.join(path, "chrome-data"))
+def execute(driver, selected_folder, selected_row_type, selected_output_name):
     get_page(driver)
     driver.implicitly_wait(10)
     attempt_login(driver)  
     list_folders(driver)
-    select_folder(driver, '//*[text()="*2021 Municipal St. Petersburg Master"]')
-    table = expect_by_tag(expect_by_tag(driver, "table"), "tbody")
+
+
+    folder_name = '//*[text()="{}"]'.format(selected_folder)
+    expect_by_XPATH(driver, folder_name).click()
+    # table = expect_by_tag(expect_by_tag(driver, "table"), "tbody")
 
     map_regions = []
 
@@ -63,20 +89,13 @@ if __name__ == '__main__':
     settings_button.click()
     rows_p_page_input = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VANDetailsItemDefaultRows_VANInputItemDetailsItemDefaultRows_DefaultRows"]')
 
-    # time.sleep(2)
     rows_p_page_input.clear()
     rows_p_page_input.send_keys("999")
-    # rows_per_page = int(expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VANDetailsItemDefaultRows_VANInputItemDetailsItemDefaultRows_DefaultRows"]').get_attribute('value'))
+   
 
     save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_ButtonSave"]')
     save_button.click()
-    # driver.back()
 
-    # print("rows:{}".format(num_rows))
-    # print("rows p page:{}".format(rows_per_page))
-
-
-    # current_page_number = 0
 
     for index in range(1,num_rows+1):
 
@@ -87,72 +106,39 @@ if __name__ == '__main__':
         # check for map turf
         row_type = expect_by_XPATH(driver, row_xpath + '/td[3]/span').text
         print("ROW_TYPE:{}".format(row_type))
-        if row_type == "Map Turf":
-            # print("actual row:{r}   mod row:{m}".format(r=index+1, m=(index%rows_per_page)+1))
-            map_region = MapRegion()
-            map_region.ID = expect_by_XPATH(driver, row_xpath + '/td[2]/span').text
-            map_region.NAME = expect_by_XPATH(driver, row_xpath + '/td[4]/a/span').text
-            
-            # get stuff on edit page
-            button = expect_by_XPATH(driver, row_xpath + '/td[4]')
-            edit_button = expect_by_tag(button, "a")
-            edit_button.click()
+        if (row_type == "Map Region" and row_type == selected_row_type) or (row_type == "Map Turf" and row_type == selected_row_type):
+                map_region = MapRegion()
+                map_region.ID = expect_by_XPATH(driver, row_xpath + '/td[2]/span').text
+                map_region.NAME = expect_by_XPATH(driver, row_xpath + '/td[4]/a/span').text
+                
+                # get stuff on edit page
+                button = expect_by_XPATH(driver, row_xpath + '/td[4]')
+                edit_button = expect_by_tag(button, "a")
+                edit_button.click()
 
-            time.sleep(0.25)
-            driver.switch_to.alert.accept()
+                time.sleep(0.25)
+                driver.switch_to.alert.accept()
 
-            map_region.PEOPLE = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VoterCount"]').text
-            map_region.HOME_PHONES = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_PhoneCount"]').text
-            map_region.PREFERRED_PHONES = expect_by_XPATH(driver, '//*[@id="content"]/div/div[1]/div[3]/div[3]/ul/li[3]/div/div[1]').text
-            map_region.DOORS = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_DoorCount"]').text
-            map_region.MAILBOXES = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_MailingCount"]').text
+                map_region.PEOPLE = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VoterCount"]').text
+                map_region.HOME_PHONES = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_PhoneCount"]').text
+                map_region.PREFERRED_PHONES = expect_by_XPATH(driver, '//*[@id="content"]/div/div[1]/div[3]/div[3]/ul/li[3]/div/div[1]').text
+                map_region.DOORS = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_DoorCount"]').text
+                map_region.MAILBOXES = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_MailingCount"]').text
 
-            # back to table
-            driver.back()
+                # back to table
+                driver.back()
 
 
-            map_region.display()
-            map_regions.append(map_region)
+                map_region.display()
+                map_regions.append(map_region)
 
-        with open("regions.pkl", "wb") as file:
-            pickle.dump(map_regions, file)
+    os.remove("{}.pkl".format(selected_output_name))
+
+    with open("{}.pkl".format(selected_output_name), "wb") as file:
+        pickle.dump(map_regions, file)
+
+
+if __name__ == '__main__':
+    execute("*2021 Municipal St. Petersburg Master", "Any", "test")
+
     
-
-    # accept alert
-    # time.sleep(5)
-    # driver.switch_to.alert.accept()
-
-
-
-
-
-
-
-
-
-    # # editing search options handle later
-    # button = expect_by_XPATH(driver, '//*[@id="addStep"]')
-    # button.click()
-    # inner_button = expect_by_XPATH(button, '//*[@id="editSearchOption"]')
-    # inner_button.click()
-
-    # # select new table
-    # table = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_AllPageSectionsPanelHolder"]')
-
-    # rows = table.find_elements(By.CLASS_NAME, "OpenClosePSButton")
-    # for row in rows:
-    #     src = row.get_attribute("src")
-    #     if "right" in src:
-    #         time.sleep(1)
-    #         try:
-    #             row.click()
-    #         except Exception:
-    #             pass
-    
-    # # parse the selected options
-    # page_src = driver.page_source
-    # soup = BeautifulSoup(page_src, 'html.parser')
-
-    # with open("src.txt", "w", encoding="utf-8") as file:
-    #     file.write(str(soup))
-
