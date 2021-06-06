@@ -2,7 +2,7 @@ from map_region_manager import *
 import pickle
 
 class TurfManager:
-    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("Turf", "B"), ("Doors", "Q"), ("People", "M")])):
+    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("Turf", "C"), ("Doors", "Q"), ("People", "M")])):
         self.wks = wks
         self.column_title_mappings = column_title_mappings
         self.SLEEP_TIME = 1
@@ -16,7 +16,7 @@ class TurfManager:
         region_dict = region.flatten()
         new_dict = dict([(key, region_dict[key]) for key in region_dict.keys() if key in set(self.column_title_mappings.keys())])
         new_dict["Turf"] = region.get_turf()
-        new_dict["Precinct"] = region.get_turf_precinct()
+        new_dict["Precinct"] = region.get_precinct()
         cells = []
         time.sleep(self.SLEEP_TIME)
         for title in new_dict.keys():
@@ -27,17 +27,17 @@ class TurfManager:
     def update_rows(self, regions):
         name_cells = self.wks.get_col(1, returnas="cell", include_tailing_empty=False)[1:]
         end_index = len(name_cells) + 1
-        cell_mappings = dict([(cell.value, cell.label) for cell in name_cells])
-        for region in regions[1:]:
+        cell_mappings = dict([(cell.value.strip(), cell.label) for cell in name_cells])
+        for region in regions:
             try:
-                index = self.conv_index(cell_mappings[region.NAME])
+                index = self.conv_index(cell_mappings[region.NAME.strip()])
                 self.update_row(region, index)
             # row doesn't exist yet
             except:
                 if self.APPEND:
                     end_index+=1
                     self.update_row(region, end_index)
-                    region.display()
+                    # region.display()
 
     def conv_index(self, address):
         index = int("".join([a for a in str(address) if not a.isalpha()]))
@@ -57,7 +57,7 @@ def run_turfs():
 
     mrman = TurfManager(wks)
     mrman.APPEND = True
-    mrman.prep_column_headings()
+    # mrman.prep_column_headings()
     mrman.update_rows(regions)
 
 # if __name__ == "__main__":

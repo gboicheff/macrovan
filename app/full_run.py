@@ -9,3 +9,4 @@ if __name__ == "__main__":
     execute(driver, "**2021 Municipal St. Petersburg", "Map Turf", "turfs")
     run_turfs()
     run_precincts()
+    print("---Done---")

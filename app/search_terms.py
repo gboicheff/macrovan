@@ -5,6 +5,7 @@ import pickle
 import random
 import sys
 import os
+import re
 
 path = os.getcwd()
 print(f"The current working directory is {path}")
@@ -32,28 +33,18 @@ class MapRegion:
         """.format(id = self.ID, name=self.NAME, people=self.PEOPLE, h_phones = self.HOME_PHONES, p_phones = self.PREFERRED_PHONES, doors = self.DOORS, m_boxes = self.MAILBOXES)
         print(output)
 
-    def get_precinct(self):
-        try:
-            name = self.NAME
-            name_part = self.NAME.split()[0]
-            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
-        except:
-            num = "ERROR"
-        return num
-
-    def get_turf_precinct(self):
-        try:
-            name = self.NAME
-            name_part = self.NAME.split()[1]
-            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
-        except:
-            num = "ERROR"
-        return num
-
     def get_turf(self):
         try:
-            name_part = self.NAME.split()[-1]
-            num = int("".join([a for a in str(name_part) if not a.isalpha()]))
+            num = re.search("Turf [0-9]+", self.NAME).group()
+            num = int(num.split()[-1])
+        except:
+            num = "ERROR"
+        return num
+
+    def get_precinct(self):
+        try:
+            num = re.search("(P|p)(_| )?[0-9]+", self.NAME).group()
+            num = int("".join([digit for digit in num if digit.isnumeric()]))
         except:
             num = "ERROR"
         return num
@@ -132,7 +123,8 @@ def execute(driver, selected_folder, selected_row_type, selected_output_name):
                 map_region.display()
                 map_regions.append(map_region)
 
-    os.remove("{}.pkl".format(selected_output_name))
+    if os.path.isfile("{}.pkl".format(selected_output_name)):
+        os.remove("{}.pkl".format(selected_output_name))
 
     with open("{}.pkl".format(selected_output_name), "wb") as file:
         pickle.dump(map_regions, file)

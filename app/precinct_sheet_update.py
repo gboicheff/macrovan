@@ -3,7 +3,7 @@ import pickle
 
 
 class PrecinctManager:
-    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "J"), ("Doors", "N")])):
+    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "I"), ("Doors", "M")])):
         self.wks = wks
         self.column_title_mappings = column_title_mappings
         self.SLEEP_TIME = 1
@@ -28,19 +28,18 @@ class PrecinctManager:
     def update_rows(self, regions):
         id_cells = self.wks.get_col(1, returnas="cell", include_tailing_empty=False)[1:]
         end_index = len(id_cells) + 1
-        cell_mappings = dict([(cell.value, cell.label) for cell in id_cells])
-        
-        for region in regions[1:]:
+        cell_mappings = dict([(cell.value.strip(), cell.label) for cell in id_cells])
+        for region in regions:
             try:
-                num = region.NAME
-                index = self.conv_index(cell_mappings[num])
+                index = self.conv_index(cell_mappings[region.NAME.strip()])
                 self.update_row(region, index)
             # row doesn't exist yet
             except:
+                print(region.NAME)
                 if self.APPEND:
                     end_index+=1
                     self.update_row(region, end_index)
-                    region.display()
+                    # region.display()
 
     def conv_index(self, address):
         index = int("".join([a for a in str(address) if not a.isalpha()]))
@@ -59,23 +58,5 @@ def run_precincts():
     wks = sh.worksheet_by_title("Data By Precinct")
 
     mrman = PrecinctManager(wks)
-    mrman.prep_column_headings()
     mrman.APPEND = True
     mrman.update_rows(regions)
-
-# if __name__ == "__main__":
-#     # load region objects
-#     with open("precincts.pkl", "rb") as file:
-#         regions = pickle.load(file)
-
-
-#     gc = pygsheets.authorize(service_account_file="client_secret.json")
-
-#     # Open spreadsheet and then worksheet
-#     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=864082663')
-#     wks = sh.worksheet_by_title("Data By Precinct")
-
-#     mrman = PrecinctManager(wks)
-#     mrman.prep_column_headings()
-#     mrman.APPEND = True
-#     mrman.update_rows(regions)
