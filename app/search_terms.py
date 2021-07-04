@@ -96,8 +96,9 @@ def execute(driver, selected_folder, selected_row_type, selected_output_name):
 
         # check for map turf
         row_type = expect_by_XPATH(driver, row_xpath + '/td[3]/span').text
+        print(row_type)
         print("ROW_TYPE:{}".format(row_type))
-        if (row_type == "Map Region" and row_type == selected_row_type) or (row_type == "Map Turf" and row_type == selected_row_type):
+        if (row_type == selected_row_type):
                 map_region = MapRegion()
                 map_region.ID = expect_by_XPATH(driver, row_xpath + '/td[2]/span').text
                 map_region.NAME = expect_by_XPATH(driver, row_xpath + '/td[4]/a/span').text

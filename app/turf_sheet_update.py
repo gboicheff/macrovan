@@ -2,7 +2,7 @@ from map_region_manager import *
 import pickle
 
 class TurfManager:
-    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("Turf", "C"), ("Doors", "Q"), ("People", "M")])):
+    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "Q"), ("People", "K")])):
         self.wks = wks
         self.column_title_mappings = column_title_mappings
         self.SLEEP_TIME = 1

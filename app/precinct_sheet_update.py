@@ -3,7 +3,7 @@ import pickle
 
 
 class PrecinctManager:
-    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "I"), ("Doors", "M")])):
+    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "G"), ("Doors", "M")])):
         self.wks = wks
         self.column_title_mappings = column_title_mappings
         self.SLEEP_TIME = 1
@@ -26,16 +26,22 @@ class PrecinctManager:
         self.wks.update_values(cell_list=cells)
 
     def update_rows(self, regions):
-        id_cells = self.wks.get_col(1, returnas="cell", include_tailing_empty=False)[1:]
+        id_cells = self.wks.get_col(2, returnas="cell", include_tailing_empty=False)[1:]
         end_index = len(id_cells) + 1
         cell_mappings = dict([(cell.value.strip(), cell.label) for cell in id_cells])
+        print(cell_mappings)
         for region in regions:
             try:
-                index = self.conv_index(cell_mappings[region.NAME.strip()])
+                print(region.get_precinct())
+                index = self.conv_index(cell_mappings[str(region.get_precinct())])
                 self.update_row(region, index)
+                print(index)
             # row doesn't exist yet
-            except:
+            except Exception as e:
+                print('error-start')
+                print(e)
                 print(region.NAME)
+                print("error-end")
                 if self.APPEND:
                     end_index+=1
                     self.update_row(region, end_index)
