@@ -3,7 +3,7 @@ import pickle
 
 
 class PrecinctManager:
-    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "G"), ("Doors", "M")])):
+    def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "J"), ("Doors", "O")])):
         self.wks = wks
         self.column_title_mappings = column_title_mappings
         self.SLEEP_TIME = 1
@@ -51,9 +51,9 @@ class PrecinctManager:
         index = int("".join([a for a in str(address) if not a.isalpha()]))
         return index
 
-def run_precincts():
+def run_precincts_VBM():
     # load region objects
-    with open("precincts.pkl", "rb") as file:
+    with open("VBM_precincts.pkl", "rb") as file:
         regions = pickle.load(file)
 
 
@@ -63,6 +63,23 @@ def run_precincts():
     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=864082663')
     wks = sh.worksheet_by_title("Data By Precinct")
 
-    mrman = PrecinctManager(wks)
+    mrman = PrecinctManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "J"), ("Doors", "O")]))
+    mrman.APPEND = True
+    mrman.update_rows(regions)
+
+
+def run_precincts_normal():
+    # load region objects
+    with open("normal_precincts.pkl", "rb") as file:
+        regions = pickle.load(file)
+
+
+    gc = pygsheets.authorize(service_account_file="client_secret.json")
+
+    # Open spreadsheet and then worksheet
+    sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=864082663')
+    wks = sh.worksheet_by_title("Data By Precinct")
+
+    mrman = PrecinctManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "G"), ("Doors", "M")]))
     mrman.APPEND = True
     mrman.update_rows(regions)

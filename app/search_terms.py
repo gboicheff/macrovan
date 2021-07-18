@@ -83,9 +83,13 @@ def execute(driver, selected_folder, selected_row_type, selected_output_name):
     rows_p_page_input.clear()
     rows_p_page_input.send_keys("999")
    
-
+    time.sleep(1.5)
     save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_ButtonSave"]')
     save_button.click()
+
+    refresh_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_RefreshFilterButton"]')
+    refresh_button.click()
+    time.sleep(1)
 
 
     for index in range(1,num_rows+1):
