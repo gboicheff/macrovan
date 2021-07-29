@@ -1,6 +1,6 @@
-from map_region_manager import *
 import pickle
-
+import pygsheets
+import time
 class TurfManager:
     def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "Q"), ("People", "K")])):
         self.wks = wks
@@ -24,6 +24,7 @@ class TurfManager:
             cells.append(cell)
         self.wks.update_values(cell_list=cells)
 
+
     def update_rows(self, regions):
         name_cells = self.wks.get_col(1, returnas="cell", include_tailing_empty=False)[1:]
         end_index = len(name_cells) + 1
@@ -32,6 +33,7 @@ class TurfManager:
             try:
                 index = self.conv_index(cell_mappings[region.NAME.strip()])
                 self.update_row(region, index)
+                cell_mappings.pop(region.NAME.strip())
             # row doesn't exist yet
             except:
                 if self.APPEND:
@@ -39,9 +41,17 @@ class TurfManager:
                     self.update_row(region, end_index)
                     # region.display()
 
+        #delete old rows
+        # indices = cell_mappings.values()
+        # for index in indices:
+        #     self.wks.delete_rows(index, number=1)
+
+
     def conv_index(self, address):
         index = int("".join([a for a in str(address) if not a.isalpha()]))
         return index
+
+
 
 def run_turfs():
     # load region objects
@@ -55,7 +65,26 @@ def run_turfs():
     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=0')
     wks = sh.worksheet_by_title("Data By Turf")
 
-    mrman = TurfManager(wks)
+    mrman = TurfManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "S"), ("People", "N")]))
+    mrman.APPEND = True
+    # mrman.prep_column_headings()
+    mrman.update_rows(regions)
+
+def run_VBM_turfs():
+    # load region objects
+    with open("VBM_turfs.pkl", "rb") as file:
+        regions = pickle.load(file)
+
+    print(regions)
+
+
+    gc = pygsheets.authorize(service_account_file="client_secret.json")
+
+    # Open spreadsheet and then worksheet
+    sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=0')
+    wks = sh.worksheet_by_title("Data By Turf")
+
+    mrman = TurfManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "S"), ("People", "N")]))
     mrman.APPEND = True
     # mrman.prep_column_headings()
     mrman.update_rows(regions)

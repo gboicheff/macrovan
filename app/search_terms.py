@@ -95,7 +95,7 @@ def execute(driver, selected_folder, selected_row_type, selected_output_name):
     for index in range(1,num_rows+1):
 
 
-        time.sleep(random.randint(1,3))
+        time.sleep(random.randint(1,3) + 10)
         row_xpath = '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tbody/tr[{index}]'.format(index=index)
 
         # check for map turf

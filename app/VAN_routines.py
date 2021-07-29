@@ -507,9 +507,7 @@ def get_VBM_turf_counts(driver, selected_folder, output_file_name, edit_steps=[n
 
 
     for index in range(1,num_rows+1):
-
-
-        time.sleep(random.randint(1,3))
+        time.sleep(random.randint(1,3) + 15)
         row_xpath = '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tbody/tr[{index}]'.format(index=index)
 
         # check for map turf
@@ -580,12 +578,13 @@ if __name__ == '__main__':
     driver.maximize_window()
 
     # #precincts = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,150,151,152,153,154,155,156,157,161,162,165,200,201,202,203,204,205,211,213,215,216,217,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,239,240,241,275,401]
+    precincts = [235,236,237,239,240,241,275,401]
     # precincts = [225,226,227,228,229,230,231,232,233,234,235,236,237,239,240,241,275,401]
-    # #edit_steps = [new_step_1_mun_2020, new_step_2_mun_2020, new_step_3_mun_2020, new_step_4_mun_2020, new_step_5_mun_2020, new_step_6_mun_2020, new_step_7_mun_2020, new_step_8_mun_2020]
+    edit_steps = [new_step_1_mun_2020, new_step_2_mun_2020, new_step_3_mun_2020, new_step_4_mun_2020, new_step_5_mun_2020, new_step_6_mun_2020, new_step_7_mun_2020, new_step_8_mun_2020]
     # edit_steps = [new_step_1_mun_2020, new_step_2_mun_2020, new_step_3_mun_2020, new_step_4_mun_2020, new_step_5_mun_2020, new_step_6_mun_2020, new_step_7_mun_2020]
-    # create_precincts(driver, precincts, edit_steps, 'New Sheet Precincts')
+    create_precincts(driver, precincts, edit_steps, 'Sheet VBM Precincts')
 
-    get_VBM_turf_counts(driver, '**2021 Municipal St. Petersburg', 'vbm_turfs')
+    # get_VBM_turf_counts(driver, '**2021 Municipal St. Petersburg', 'vbm_turfs')
     print("done")
 
     

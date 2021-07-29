@@ -1,7 +1,6 @@
-from map_region_manager import *
 import pickle
-
-
+import pygsheets
+import time
 class PrecinctManager:
     def __init__(self, wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "B"), ("People", "J"), ("Doors", "O")])):
         self.wks = wks
