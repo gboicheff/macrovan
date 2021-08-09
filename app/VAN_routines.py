@@ -257,6 +257,13 @@ def new_step_2_mun_2020(driver, precinct_num):
 
 def new_step_3_mun_2020(driver, precinct_num):
     add_step(driver, True)
+    activist_codes = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionActivistCodes"]')
+    activist_codes.click()
+
+    code_input = expect_by_XPATH(driver, '//*[@id="PanelSectionActivistCodes"]/table/tbody/tr[1]/td/table/tbody/tr[2]/td[2]/select')
+    
+    code_input_select = Select(code_input)
+    code_input_select.select_by_visible_text('Activist: VoteBadAddress2021 (Public)')
 
 
     party_dropdown_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionParty"]')
@@ -422,18 +429,89 @@ def new_step_7_mun_2020(driver, precinct_num):
     toggle(lean_rep_button, True)
 
 
-    # default_voter_status(driver)
+def new_step_7_mun_2020(driver, precinct_num):
+    add_step(driver, False)
 
-def new_step_8_mun_2020(driver, precinct_num):
+
+
+    survey_question_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_UpdatePanelSurveyQuestions"]/div[1]/div/label')
+    survey_question_button.click()
+
+    survey_dropdown = expect_by_XPATH(driver, '//*[@id="PanelSectionSurveyQuestions"]/table/tbody/tr[1]/td/table/tbody/tr[1]/td[2]/select')
+    survey_dropdown_select = Select(survey_dropdown)
+
+    survey_dropdown_select.select_by_visible_text('2022 Affiliation: Party Affiliation (Public)')
+
+    strong_rep_button = expect_by_XPATH(driver, '//*[@id="SurveyResponseIDs_1786084"]')
+    toggle(strong_rep_button, True)
+
+    lean_rep_button = expect_by_XPATH(driver, '//*[@id="SurveyResponseIDs_1786083"]')
+    toggle(lean_rep_button, True)
+
+
+    
+
+# def new_step_8_mun_2020(driver, precinct_num):
+#     narrow(driver)
+
+#     early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
+#     early_voting_button.click()
+
+#     R_toggle = expect_by_XPATH(driver, '//*[@id="BallotReturnStatusName_117"]')
+#     toggle(R_toggle, True)
+
+
+def new_step_9_mun_2020(driver, precinct_num):
+    add_step(driver, False)
+
+    early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
+    early_voting_button.click()
+
+    V_toggle = expect_by_XPATH(driver, '//*[@id="BallotReturnStatusName_120"]')
+    toggle(V_toggle, True)
+
+
+def new_step_10_mun_2020(driver, precinct_num):
+    add_step(driver, False)
+
+    early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
+    early_voting_button.click()
+
+    time.sleep(0.3)
+
+    select = expect_by_XPATH(driver, '//*[@id="PanelSectionEarlyVoting"]/table/tbody/tr[2]/td/table/tbody/tr[13]/td[2]/select')
+    select = Select(select)
+    select.select_by_visible_text("Include Only")
+
+    toggler = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_EarlyVoteCheckboxId_BallotReceived"]')
+    toggle(toggler, True)
+
+def new_step_11_mun_2020(driver, precinct_num):
+    add_step(driver, False)
+
+    early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
+    early_voting_button.click()
+
+    time.sleep(0.3)
+
+    select = expect_by_XPATH(driver, '//*[@id="PanelSectionEarlyVoting"]/table/tbody/tr[2]/td/table/tbody/tr[13]/td[2]/select')
+    select = Select(select)
+    select.select_by_visible_text("Include Only")
+
+    toggler = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_EarlyVoteCheckboxId_BallotReceived"]')
+    toggle(toggler, True)
+
+
+def new_step_12_mun_2020(driver, precinct_num):
     narrow(driver)
 
     early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
     early_voting_button.click()
 
+    time.sleep(0.3)
+
     R_toggle = expect_by_XPATH(driver, '//*[@id="BallotReturnStatusName_117"]')
     toggle(R_toggle, True)
-
-
 
 
 def create_precincts(driver, precincts, edit_steps, target_folder_name):
@@ -472,7 +550,7 @@ def create_precincts(driver, precincts, edit_steps, target_folder_name):
 
 
 
-def get_VBM_turf_counts(driver, selected_folder, output_file_name, edit_steps=[new_step_8_mun_2020]):
+def get_VBM_turf_counts(driver, selected_folder, output_file_name, edit_steps):
     get_page(driver)
     driver.implicitly_wait(60)
     list_folders(driver)
@@ -523,7 +601,6 @@ def get_VBM_turf_counts(driver, selected_folder, output_file_name, edit_steps=[n
                 button = expect_by_XPATH(driver, row_xpath + '/td[4]')
                 edit_button = expect_by_tag(button, "a")
                 edit_button.click()
-
                 time.sleep(0.25)
                 driver.switch_to.alert.accept()
 
@@ -572,19 +649,128 @@ def get_VBM_turf_counts(driver, selected_folder, output_file_name, edit_steps=[n
         pickle.dump(map_regions, file)
 
 
+def save_precinct(driver, name, target_folder):
+    save_list_as_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_saveAsButton"]')
+    save_list_as_button.click()
+
+    saved_search_button = expect_by_XPATH(driver, '//*[@id="SaveSearchRadioBtn"]')
+    saved_search_button.click()
+
+    time.sleep(1.5)
+
+    select_folder = expect_by_XPATH(driver, '//*[@id="Folder"]')
+    select_folder = Select(select_folder)
+    select_folder.select_by_visible_text(target_folder)
+
+    time.sleep(0.75)
+
+    name_input = expect_by_XPATH(driver, '//*[@id="Name"]')
+    name_input.clear()
+    name_input.send_keys(name)
+
+    time.sleep(0.25)
+
+    save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_SubmitButton"]')
+    save_button.click()
+
+
+
+
+
+
+
+def update_precincts(driver, selected_folder, edit_steps):
+    get_page(driver)
+    driver.implicitly_wait(60)
+    list_folders(driver)
+
+    folder_name = '//*[text()="{}"]'.format(selected_folder)
+    expect_by_XPATH(driver, folder_name).click()
+
+
+    # find num rows
+    try:
+        num_rows = int(expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tfoot/tr/td/table/tbody/tr/td[1]/b[1]', 5).text.split()[0])
+    except TimeoutException:
+        num_rows = int(expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tfoot/tr/td/b[1]', 5).text.split()[0])
+
+    # set the number of rows per page to 999
+    settings_button = expect_by_XPATH(driver, '//*[@id="HyperLinkSettings"]')
+    settings_button.click()
+    rows_p_page_input = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VANDetailsItemDefaultRows_VANInputItemDetailsItemDefaultRows_DefaultRows"]')
+
+    rows_p_page_input.clear()
+    rows_p_page_input.send_keys("999")
+   
+
+    save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_ButtonSave"]')
+    save_button.click()
+
+    time.sleep(1.5)
+    refresh_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_RefreshFilterButton"]')
+    refresh_button.click()
+    time.sleep(1)
+
+
+    for index in range(1,num_rows+1):
+        time.sleep(random.randint(1,3) + 15)         
+        row_xpath = '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tbody/tr[{index}]'.format(index=index)
+
+        precinct_NAME = expect_by_XPATH(driver, row_xpath + '/td[4]/a/span').text
+        
+        button = expect_by_XPATH(driver, row_xpath + '/td[4]')
+        edit_button = expect_by_tag(button, "a")
+        edit_button.click()
+
+        try:
+            WebDriverWait(driver, 5).until(EC.alert_is_present())
+            alert = driver.switch_to.alert
+            alert.accept()
+            print("alert Exists in page")
+        except TimeoutException:
+            print("alert does not Exist in page")
+        
+        edit_search_button = expect_by_XPATH(driver, '//*[@id="addStep"]')
+        edit_search_button.click()
+
+        edit_button = expect_by_XPATH(edit_search_button, '//*[@id="editSearchOption"]')
+        edit_button.click()
+
+        for step in edit_steps:
+            sleep_random_time(0.25)
+            step(driver, -999999999999999999)
+            sleep_random_time(0.25)
+            preview_results(driver)
+            
+        run_search(driver)
+
+        save_precinct(driver, precinct_NAME + "-Voters rm", 'Sheet Precincts Voter Removed')
+
+        home_button = expect_by_XPATH(driver, '//*[@id="wrapper"]/div[1]/div[1]/div/div[2]/a')
+        home_button.click()
+
+        time.sleep(2)
+        list_folders(driver)
+        folder_name = '//*[text()="{}"]'.format(selected_folder)
+        expect_by_XPATH(driver, folder_name).click()
 
 if __name__ == '__main__':
     driver = start_driver(os.path.join(path, "chrome-data"))
     driver.maximize_window()
 
-    # #precincts = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,150,151,152,153,154,155,156,157,161,162,165,200,201,202,203,204,205,211,213,215,216,217,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,239,240,241,275,401]
-    precincts = [235,236,237,239,240,241,275,401]
-    # precincts = [225,226,227,228,229,230,231,232,233,234,235,236,237,239,240,241,275,401]
-    edit_steps = [new_step_1_mun_2020, new_step_2_mun_2020, new_step_3_mun_2020, new_step_4_mun_2020, new_step_5_mun_2020, new_step_6_mun_2020, new_step_7_mun_2020, new_step_8_mun_2020]
-    # edit_steps = [new_step_1_mun_2020, new_step_2_mun_2020, new_step_3_mun_2020, new_step_4_mun_2020, new_step_5_mun_2020, new_step_6_mun_2020, new_step_7_mun_2020]
-    create_precincts(driver, precincts, edit_steps, 'Sheet VBM Precincts')
+    precincts = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,
+    118,119,120,121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,
+    139,140,141,142,143,144,145,146,147,150,151,152,153,154,155,156,157,161,162,165,200,
+    201,202,203,204,205,211,213,215,216,217,219,220,221,222,223,224,225,226,227,228,229,
+    230,231,232,233,234,235,236,237,239,240,241,275,401]
+
+    edit_steps = [new_step_9_mun_2020, new_step_10_mun_2020, new_step_11_mun_2020, new_step_12_mun_2020]
+    
+    # create_precincts(driver, precincts, edit_steps, 'Sheet Precincts Voter Removed')
 
     # get_VBM_turf_counts(driver, '**2021 Municipal St. Petersburg', 'vbm_turfs')
+
+    update_precincts(driver, 'Sheet Precincts', edit_steps)
     print("done")
 
     

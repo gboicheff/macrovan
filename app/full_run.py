@@ -13,7 +13,7 @@ if __name__ == "__main__":
     time.sleep(672)
     
     try:
-        execute(driver, "Sheet Precincts", "Search", "normal_precincts")
+        execute(driver, "Sheet Precincts Voter Removed", "Search", "normal_precincts")
     except Exception as e:
         print(e)
 
@@ -26,10 +26,6 @@ if __name__ == "__main__":
 
     time.sleep(750)
 
-    # try:
-    #     get_VBM_turf_counts(driver, '**2021 Municipal St. Petersburg', 'VBM_turfs')
-    # except Exception as e:
-    #     print(e)
     
     try:
         run_turfs()
