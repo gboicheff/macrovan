@@ -5,6 +5,7 @@ from VAN_routines import *
 if __name__ == "__main__":
     teardown()
     driver = start_driver(os.path.join(path, "chrome-data"))
+
     try:
         execute(driver, "Sheet VBM Precincts", "Search", "VBM_precincts")
     except Exception as e:
@@ -13,7 +14,7 @@ if __name__ == "__main__":
     time.sleep(672)
     
     try:
-        execute(driver, "Sheet Precincts Voter Removed", "Search", "normal_precincts")
+        execute(driver, "Sheet Precincts Voters Removed Fixed", "Search", "normal_precincts")
     except Exception as e:
         print(e)
 
@@ -32,11 +33,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
 
-    # try:
-    #     run_VBM_turfs()
-    # except Exception as e:
-    #     print(e)
-
     try:
         run_precincts_VBM()
     except Exception as e:
@@ -46,4 +42,5 @@ if __name__ == "__main__":
         run_precincts_normal()
     except Exception as e:
         print(e)
+
     print("---Done---")

@@ -4,6 +4,8 @@ import time
 
 from datetime import date
 import datetime
+
+
 class PrecinctManager:
     def __init__(self, wks, column_title_mappings):
         self.wks = wks

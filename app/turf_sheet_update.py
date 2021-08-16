@@ -93,7 +93,7 @@ def run_turfs():
     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/156ta7rVPOJMsLZpBd3t5TIS6bbV-7fJcJ8ceWGgIXK0/edit#gid=0')
     wks = sh.worksheet_by_title("Data By Turf")
 
-    mrman = TurfManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "S"), ("People", "O")]))
+    mrman = TurfManager(wks, column_title_mappings=dict([("Name", "A"), ("Precinct", "T"), ("Turf", "U"), ("Doors", "R"), ("People", "L")]))
     mrman.APPEND = True
     # mrman.prep_column_headings()
     mrman.update_rows(regions)

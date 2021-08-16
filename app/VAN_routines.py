@@ -486,32 +486,7 @@ def new_step_10_mun_2020(driver, precinct_num):
     toggler = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_EarlyVoteCheckboxId_BallotReceived"]')
     toggle(toggler, True)
 
-def new_step_11_mun_2020(driver, precinct_num):
-    add_step(driver, False)
 
-    early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
-    early_voting_button.click()
-
-    time.sleep(0.3)
-
-    select = expect_by_XPATH(driver, '//*[@id="PanelSectionEarlyVoting"]/table/tbody/tr[2]/td/table/tbody/tr[13]/td[2]/select')
-    select = Select(select)
-    select.select_by_visible_text("Include Only")
-
-    toggler = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_EarlyVoteCheckboxId_BallotReceived"]')
-    toggle(toggler, True)
-
-
-def new_step_12_mun_2020(driver, precinct_num):
-    narrow(driver)
-
-    early_voting_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionEarlyVoting"]')
-    early_voting_button.click()
-
-    time.sleep(0.3)
-
-    R_toggle = expect_by_XPATH(driver, '//*[@id="BallotReturnStatusName_117"]')
-    toggle(R_toggle, True)
 
 
 def create_precincts(driver, precincts, edit_steps, target_folder_name):
@@ -712,7 +687,7 @@ def update_precincts(driver, selected_folder, edit_steps):
     time.sleep(1)
 
 
-    for index in range(1,num_rows+1):
+    for index in range(87,num_rows+1):
         time.sleep(random.randint(1,3) + 15)         
         row_xpath = '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tbody/tr[{index}]'.format(index=index)
 
@@ -744,7 +719,7 @@ def update_precincts(driver, selected_folder, edit_steps):
             
         run_search(driver)
 
-        save_precinct(driver, precinct_NAME + "-Voters rm", 'Sheet Precincts Voter Removed')
+        save_precinct(driver, precinct_NAME + "-Voters rm New", 'Sheet Precincts Voters Removed Fixed')
 
         home_button = expect_by_XPATH(driver, '//*[@id="wrapper"]/div[1]/div[1]/div/div[2]/a')
         home_button.click()
@@ -758,13 +733,16 @@ if __name__ == '__main__':
     driver = start_driver(os.path.join(path, "chrome-data"))
     driver.maximize_window()
 
-    precincts = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,
-    118,119,120,121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,
-    139,140,141,142,143,144,145,146,147,150,151,152,153,154,155,156,157,161,162,165,200,
-    201,202,203,204,205,211,213,215,216,217,219,220,221,222,223,224,225,226,227,228,229,
+    # precincts = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,
+    # 118,119,120,121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,
+    # 139,140,141,142,143,144,145,146,147,150,151,152,153,154,155,156,157,161,162,165,200,
+    # 201,202,203,204,205,211,213,215,216,217,219,220,221,222,223,224,225,226,227,228,229,
+    # 230,231,232,233,234,235,236,237,239,240,241,275,401]
+
+    precincts = [216,217,219,220,221,222,223,224,225,226,227,228,229,
     230,231,232,233,234,235,236,237,239,240,241,275,401]
 
-    edit_steps = [new_step_9_mun_2020, new_step_10_mun_2020, new_step_11_mun_2020, new_step_12_mun_2020]
+    edit_steps = [new_step_9_mun_2020, new_step_10_mun_2020]
     
     # create_precincts(driver, precincts, edit_steps, 'Sheet Precincts Voter Removed')
 
