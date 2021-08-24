@@ -1,0 +1,498 @@
+**2021 Municipal St. Petersburg D68 P137 Turf 01
+**2021 Municipal St. Petersburg D68 P138 Turf 01
+**2021 Municipal St. Petersburg D68 P138 Turf 02
+**2021 Municipal St. Petersburg D68 P138 Turf 03
+**2021 Municipal St. Petersburg D68 P138 Turf 04
+**2021 Municipal St. Petersburg D68 P138 Turf 05
+**2021 Municipal St. Petersburg D68 P138 Turf 06
+**2021 Municipal St. Petersburg D68 P138 Turf 07
+**2021 Municipal St. Petersburg D68 P138 Turf 08
+**2021 Municipal St. Petersburg D68 P138 Turf 09
+**2021 Municipal St. Petersburg D68 P143 Turf 01
+**2021 Municipal St. Petersburg D68 P143 Turf 02
+**2021 Municipal St. Petersburg D68 P144 Turf 02
+**2021 Municipal St. Petersburg D68 P144 Turf 03
+**2021 Municipal St. Petersburg D68 P144 Turf 04
+**2021 Municipal St. Petersburg D68 P154 Turf 01
+**2021 Municipal St. Petersburg D68 P154 Turf 02
+Cove at Loggerhead Turf 01
+D 70 P 125 Test Turf 01
+D68 P121 Turf 01
+D68 P121 Turf 02
+D68 P122 Turf 01
+D68 P123 Turf 01Heritage
+D68 P123 Turf 02Signature
+D68 P123 Turf 03Avanti
+D68 P123 Turf 04OldBeacon
+D68 P123 Turf 05NewBeacon
+D68 P123 Turf 06HarborEdge
+D68 P123 Turf 07Orion
+D68 P123 Turf 08McNulty
+D68 P123 Turf 09Madison200
+D68 P123 Turf 10Madison100
+D68 P123 Turf 11Casablanca
+D68 P123 Turf 12Camden
+D68 P123 Turf 13Sage
+D68 P123 Turf 14UrbanLandings
+D68 P123 Turf 15CampbellLanding
+D68 P123 Turf 16Marina
+D68 P123 Turf 17Bayfront
+D68 P123 Turf 18LutheranApts
+D68 P129 T02 Ramirez
+D68 P129 T04 Walsh
+D68 P129 T05 Walsh
+D68 P129 Turf 01
+D68 P129 Turf 03
+D68 P129 Turf 04
+D68 P130 Turf 01
+D68 P130 Turf 02
+D68 P130 Turf 03
+D68 P130 Turf 04
+D68 P130 Turf 05
+D68 P130 Turf 06
+D68 P130 Turf 07
+D68 P130 Turf 08
+D68 P130 Turf 09
+D68 P130 Turf 10
+D68 P130 Turf 11
+D68 P130 Turf 12
+D68 P130 Turf 13
+D68 P130 Turf 14
+D68 P130 Turf 15
+D68 P130 Turf 16
+D68 P130 Turf 17
+D68 P130 Turf 18
+D68 P130 Turf 19
+D68 P130 Turf 20
+D68 P130 Turf 21
+D68 P134 Turf 01
+D68 P134 Turf 02
+D68 P134 Turf 03
+D68 P134 Turf 04
+D68 P134 Turf 05
+D68 P135 Master Turf 01
+D68 P135 North Turf 01
+D68 P135 North Turf 02
+D68 P135 North Turf 03
+D68 P135 North Turf 04
+D68 P135 North Turf 05
+D68 P135 North Turf 06
+D68 P135 North Turf 07
+D68 P135 North Turf 08
+D68 P135 North Turf 09
+D68 P135 Southeast Turf 01
+D68 P135 Southeast Turf 02
+D68 P135 Southeast Turf 03
+D68 P135 Southeast Turf 04
+D68 P135 Southeast Turf 05
+D68 P135 Southeast Turf 06
+D68 P135 Southeast Turf 07
+D68 P135 Southeast Turf 08
+D68 P135 Southeast Turf 09
+D68 P135 Southeast Turf 10
+D68 P135 Southeast Turf 11
+D68 P135 Southeast Turf 12
+D68 P135 Southeast Turf 13
+D68 P135 Southeast Turf 14
+D68 P135 Southeast Turf 15
+D68 P135 Southeast Turf 26
+D68 P135 Southwest Turf 01
+D68 P135 Southwest Turf 02
+D68 P135 Southwest Turf 03
+D68 P135 Southwest Turf 04
+D68 P135 Southwest Turf 06
+D68 P135 Southwest Turf 07
+D68 P135 Southwest Turf 08
+D68 P135 Southwest Turf 14
+D68 P136 Map region Turf 01
+D68 P136 Map region Turf 02
+D68 P136 Map region Turf 03
+D68 P136 Map region Turf 04
+D68 P136 Map region Turf 05
+D68 P136 Map region Turf 06
+D68 P136 Map region Turf 07
+D68 P136 Map region Turf 08
+D68 P136 Map region Turf 09
+D68 P136 Map region Turf 10
+D68 P136 Map region Turf 11
+D68 P136 Map region Turf 12
+D68 P136 Map region Turf 13
+D68 P136 Map region Turf 14
+D68 P136 Map region Turf 15
+D68 P136 Map region Turf 16
+D68 P136 Map region Turf 17
+D68 P136 Map region Turf 18
+D68 P137 Turf 01
+D68 P138 Turf 01
+D68 P138 Turf 02
+D68 P138 Turf 03
+D68 P138 Turf 05
+D68 P138 Turf 06
+D68 P138 Turf 07
+D68 P138 Turf 08
+D68 P138 Turf 09
+D68 P138 Turf 10
+D68 P140 French Quarter Crosa
+D68 P140 Turf 01
+D68 P140 Turf 02
+D68 P140 Turf 03
+D68 P140 Turf 04
+D68 P140 Turf 05
+D68 P140 Turf 06
+D68 P140 Turf 07
+D68 P140 Turf 08
+D68 P140 Turf 09
+D68 P141 Turf 01
+D68 P141 Turf 02
+D68 P142 Turf 01
+D68 P142 Turf 02
+D68 P142 Turf 03
+D68 P142 Turf 04
+D68 P142 Turf 05
+D68 P142 Turf 06
+D68 P142 Turf 07
+D68 P143 Turf 01
+D68 P143 Turf 02
+D68 P144 Turf 01
+D68 P144 Turf 02
+D68 P144 Turf 03
+D68 P144 Turf 04
+D68 P145 4651 1st St NE
+D68 P145 4681 1st St NE
+D68 P145 4910 Bay St NE
+D68 P145 5085 1st St NE
+D68 P145 5090 Bay St NE
+D68 P145 CMullaney
+D68 P145 CMullaney2
+D68 P145 CMullaney3
+D68 P145 CMullaney4
+D68 P145 Map Region 2021 Turf 01
+D68 P145 Map Region 2021 Turf 02
+D68 P145 Map Region 2021 Turf 03
+D68 P145 Map Region 2021 Turf 04
+D68 P146 Turf 01
+D68 P146 Turf 02
+D68 P146 Turf 03
+D68 P146 Turf 04
+D68 P151 Turf 01
+D68 P153 Turf 01
+D68 P153 Turf 02
+D68 P154 Turf 01
+D68 P154 Turf 02
+D68 P154 Turf 03
+D68 P155 Turf 01
+D68 P155 Turf 02
+D68 P155 Turf 03
+D68 P155 Turf 04
+D68 P155 Turf 05
+D68 P155 Turf 06
+D68 P155 Turf 07
+D68 P155 Turf 08
+D68 P155 Turf 09
+D68 P155 Turf 10
+D68 P155 Turf 11
+D68 P155 Turf 12
+D68 P155 Turf 13
+D68 P155 Turf 14
+D68 P155 Turf 15
+D68 P155 Turf 16
+D68 P156 Turf 01
+D68 P156 Turf 02
+D68 P156 Turf 03
+D68 P156 Turf 04
+D68 P162 Turf 01
+D68 P162 Turf 02
+D68 P165 Turf 01
+D68P156 Turf 01
+D69 P127 Turf 01
+D69 P127 Turf 02
+D69 P127 Turf 03
+D69 P127 Turf 04
+D69 P127 Turf 05
+D69 P127 Turf 06
+D69 P127 Turf 07
+D69 P127 Turf 08
+D69 P127 Turf 09
+D69 P127 Turf 10
+D69 P127 Turf 11
+D69 P127 Turf 12
+D69 P127 Turf 13
+D69 P127 Turf 14
+D69 P128 Turf 01
+D69 P128 Turf 02
+D69 P128 Turf 03
+D69 P128 Turf 04
+D69 P128 Turf 05
+D69 P128 Turf 06
+D69 P202 Turf 01
+D69 P202 Turf 02
+D69 P202 Turf 03
+D69 P202 Turf 04
+D69 P202 Turf 05
+D69 P202 Turf 06
+D69 P202 Turf 07
+D69 P202 Turf 08
+D69 P202 Turf 09
+D69 P202 Turf 10
+D69 P202 Turf 11
+D69 P202 Turf 12
+D69 P202 Turf 13
+D69 P202 Turf 14
+D69 P202 Turf 15
+D69 P202 Turf 16
+D69 P216 Turf 01
+D69 P216 Turf 02
+D69 P216 Turf 03
+D69 P216 Turf 04
+D69 P216 Turf 05
+d69 p220 Turf 01
+D69 P231 Turf 01
+D69 P231 Turf 02
+D69 P231 Turf 03
+D69 P231 Turf 04
+D69 P231 Turf 05
+D69 P231 Turf 06
+D69 P231 Turf 07
+D69 P231 Turf 08
+D69 P231 Turf 09
+D69 P231 Turf 10
+D69 P231 Turf 11
+D69 P231 Turf 12
+D69 P231 Turf 13
+D69 P231 Turf 14
+D69 P231 Turf 15
+D69 P231 Turf 16
+D69 P231 Turf 17
+D69 P231 Turf 18
+D69 P231 Turf 19
+D69 P231 Turf 20
+D69 P231 Turf 21
+D69 P231 Turf 22
+D69 P231 Turf 23
+D69 P231 Turf 24
+D69 P231 Turf 25
+D69 P231 Turf 26
+D69 P231 Turf 27
+D69 P231 Turf 28
+D69 P231 Turf 29
+D69 P231 Turf 30
+D69 P233 Turf 01
+D69 P235 Turf 01
+D69 P241 Turf 01
+D69 P241 Turf 02
+D69 P241 Turf 03
+D69 P241 Turf 04
+D69 P241 Turf 05
+D69 P241 Turf 06
+D69P127 Turf 01
+D69P127 Turf 02
+D69P127 Turf 03
+D69P127 Turf 04
+D69P127 Turf 05
+D69P127 Turf 06
+D69P127 Turf 07
+D69P127 Turf 08
+D69P127 Turf 09
+D69P127 Turf 10
+D69P127 Turf 11
+D70 P 125 Test Turf 01
+D70 P101 Turf 01
+D70 P101 Turf 02
+D70 P101 Turf 03
+D70 P101 Turf 04
+D70 P101 Turf 05
+D70 P109 Turf 01
+D70 P116 Turf 01
+D70 P117 Turf 01
+D70 P118 Turf 01
+D70 P118 Turf 02
+D70 P118 Turf 03
+D70 P118 Turf 04
+D70 P118 Turf 05
+D70 P118 Turf 06
+D70 P118 Turf 07
+D70 P118 Turf 08
+D70 P118 Turf 09
+D70 P125 Turf 01
+D70 P125 Turf 02
+D70 P125 Turf 03
+D70 P125 Turf 04
+D70 P125 Turf 05
+D70 P125 Turf 06
+D70 P125 Turf 07
+D70 P125 Turf 08
+D70 P125 Turf 09
+D70 P125 Turf 10
+D70 P125 Turf 11
+D70 P125 Turf 12
+D70 P204 P205 Combined Turf 01
+D70 P204 P205 Combined Turf 02
+D70 P204 P205 Combined Turf 03
+D70 P204 P205 Combined Turf 04
+D70 P204 P205 Combined Turf 05
+D70 P204 P205 Combined Turf 06
+D70 P204 P205 Combined Turf 07
+D70 P204 P205 Combined Turf 08
+D70 P204 P205 Combined Turf 09
+D70 P204 P205 Combined Turf 10
+D70 P204 P205 Combined Turf 11
+D70 P204 P205 Combined Turf 12
+D70 P204 P205 Combined Turf 13
+D70 P204 Turf 01
+D70 P204 Turf 02
+D70 P204_FINAL Turf 01
+D70 P204_FINAL Turf 02
+D70 P204_FINAL Turf 03
+D70 P204_FINAL Turf 04
+D70 P204_FINAL Turf 05
+D70 P204_FINAL Turf 06
+D70 P204_FINAL Turf 07
+D70 P204_FINAL Turf 08
+D70 P204_FINAL Turf 09
+D70 P204_FINAL Turf 10
+D70 P204_FINAL Turf 11
+D70 P226 (pri) Turf 01
+D70 P226 (pri) Turf 02
+D70 P226 (pri) Turf 03
+D70 P226 (pri) Turf 04
+D70 P226 (pri) Turf 05
+D70 P226 (pri) Turf 06
+D70 P226 (pri) Turf 07
+D70 P226 (pri) Turf 08
+D70 P226 (pri) Turf 09
+D70 P226 (pri) Turf 10
+D70 P226 (pri) Turf 11
+D70 P226 (pri) Turf 12
+D70 P226 (pri) Turf 13
+D70 P226 (pri) Turf 14
+D70 P226 P227 combined Turf 01
+D70 P226 P227 combined Turf 02
+D70 P226 P227 combined Turf 03
+D70 P226 P227 combined Turf 04
+D70 P226 P227 combined Turf 05
+D70 P226 P227 combined Turf 06
+D70 P226 P227 combined Turf 07
+D70 P226 P227 combined Turf 08
+D70 P226 P227 combined Turf 09
+D70 P226 P227 combined Turf 10
+D70 P226 P227 combined Turf 11
+D70 P227 Turf 01
+D70 P227 Turf 02
+D70 P227 Turf 03
+D70 P227 Turf 04
+D70 P227 Turf 05
+D70 P227 Turf 06
+D70 P227 Turf 07
+D70 P227 Turf 08
+D70 P227 Turf 09
+D70 P227 Turf 10
+D70 P227 Turf 11
+D70 P227 Turf 12
+D70 P227 Turf 13
+D70 P227 Turf 14
+D70 P227 Turf 15
+D70 P227 Turf 16
+D70 P227 Turf 17
+D70 P227 Turf 18
+D70 P227 Turf 19
+D70 P227 Turf 20
+D70 P227 Turf 21
+D70 P227 Turf 22
+D70 P227 Turf 23
+D70 P227 Turf 24
+D70 P227 Turf 25
+D70 P227 Turf 26
+D70 P227 Turf 27
+D70 P227 Turf 28
+D70 P227 Turf 29
+D70 P227 Turf 30
+D70P116_CMFoust Turf 01
+joancarfora Turf 01
+P 135 Turf 01
+P 135 Turf 02
+P 146 Turf 01
+P 146 Turf 02
+P 146 Turf 03
+P_221 Turf 01
+P_221 Turf 02
+P_221 Turf 03
+P_221 Turf 04
+P_221 Turf 05
+P_221 Turf 06
+P_221 Turf 07
+P_221 Turf 08
+P_221 Turf 09
+P_221 Turf 10
+P_221 Turf 11
+P_221 Turf 12
+P_221 Turf 13
+P_221 Turf 14
+P_221 Turf 15
+P_221 Turf 16
+P_221 Turf 17
+P_221 Turf 18
+P_221 Turf 19
+P_221 Turf 20
+P_221 Turf 21
+P_221 Turf 22
+P118 all voters Turf 01
+P118 all voters Turf 02
+P118 all voters Turf 03
+P118 Feb 4 Sample Turf 01
+P129 2021 Turf 01
+P129 2021 Turf 02
+P129 2021 Turf 03
+P129 2021 Turf 04
+P129 2021 Turf 05
+P137 2021 Turf 01
+P138 all voters Turf 01
+P161 2021 Turf 01
+P162 test Turf 01
+P162 test Turf 02
+D68 P121 Turf 03
+D68 P123 New Beacon Turf 01
+D68 P147 Map Region Turf 01
+D68P132 Map Region Turf 01
+D70 P204 Turf 02
+P216DEMS ONLY 2021 PRIMARY Turf 01
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

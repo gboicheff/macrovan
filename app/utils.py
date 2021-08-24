@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.remote.command import Command
 import ctypes  # for windows message pop-up
@@ -50,7 +51,7 @@ def pause(message):
     ctypes.windll.user32.MessageBoxW(0, message, "Macrovan", 1)
 
 
-def start_driver():
+def start_driver(data_path="chrome-data"):
     """Initialize Chrome WebDriver with option that saves user-data-dir to local
      folder to handle cookies"""
     # driver.get('chrome://settings/')
@@ -66,7 +67,7 @@ def start_driver():
     # #chrome_options.add_argument("--enable-caret-browsing")
 
     # adding argument causes chrome to open with address bar highlighted and I can't figure out why!
-    chrome_options.add_argument("--user-data-dir=chrome-data")
+    chrome_options.add_argument("--user-data-dir={path}".format(path=data_path))
     chrome_options.add_argument("--disable-notifications")
     chrome_options.add_experimental_option("excludeSwitches", ['enable-logging'])
     chrome_options.add_argument('disable-infobars')
@@ -90,21 +91,37 @@ def get_page(driver):
 def login_to_page(driver):
     # login and initialize:
     # Click ActionID Button to open login
-    element = expect_by_XPATH(driver, '//a[@href="/OpenIdConnectLoginInitiator.ashx?ProviderID=4"]')
+    # element = expect_by_XPATH(driver, '//a[@href="/OpenIdConnectLoginInitiator.ashx?ProviderID=4"]')
     # print(f'ELEMENT = {element}')
 
     # driver.find_element_by_xpath("//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=4']").click()
-    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=4']").click()
+
+    # provider id looks like it was changed to 9 in VAN
+    expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']").click()
     print('After ActionID Button')
     print_title(driver)
-    expect_by_id(driver, 'username')
-    username = expect_by_id(driver, "username")
+    #expect_by_id(driver, 'username')
+    #username = expect_by_id(driver, "username")
+    username = expect_by_name(driver, "email")
     username.send_keys(user_name)
-    password = expect_by_id(driver, "password")
+    password = expect_by_name(driver, "password")
     password.send_keys(pass_word)
-    expect_by_class(driver, "btn-blue").click()
+    expect_by_name(driver, "submit").click()
     return
 
+# prevents hanging when login is remembered
+def attempt_login(driver):
+    try:
+        expect_by_XPATH(driver, "//a[@href='/OpenIdConnectLoginInitiator.ashx?ProviderID=9']", 3)
+        login_to_page(driver)
+    except TimeoutException:
+        print("Already logged in")
+    return
+
+
+def select_row(driver, table, index=0):
+    rows = table.find_elements(By.TAG_NAME, "tr")
+    return rows[index]
 
 def remember_this(driver):
     expect_by_class(driver, "checkbox").click()
@@ -118,12 +135,12 @@ def list_folders(driver):
     print('AFTER FOLDER LIST CLICK')
 
 
-def select_folder(driver):
+def select_folder(driver, folder_name='//*[text()="2020 District 68 November"]'):
     """select folder"""
     print('Select Folder')
     # driver.find_element_by_xpath('//*[text()="District 68 2020 3/17 Primary/Municipals"]').click()
     # expect_by_XPATH(driver, '//*[text()="2020 District 68"]').click()
-    expect_by_XPATH(driver, '//*[text()="2020 District 68 November"]').click()
+    expect_by_XPATH(driver, folder_name).click()
     print_title(driver)
 
 
@@ -361,44 +378,50 @@ def display_to_console(x):
     disable_print()
 
 
-def expect_by_id(driver, id_tag):
-    # handle expected conditions by id
-    wait_no_longer_than = 120
+def expect_by_id(driver, id_tag, wait_no_longer_than=120):
     print(f'Expecting {id_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.ID, id_tag)))
     return element
 
 
-def expect_by_XPATH(driver, XPATH):
-    wait_no_longer_than = 120
+def expect_by_XPATH(driver, XPATH, wait_no_longer_than=120):
     print(f'Expecting {XPATH}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.XPATH, XPATH)))
     return element
 
 
-def expect_by_class(driver, class_tag):
-    wait_no_longer_than = 120
+def expect_by_class(driver, class_tag, wait_no_longer_than=120):
     print(f'Expecting {class_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.CLASS_NAME, class_tag)))
     return element
 
 
-def expect_by_css(driver, css_tag):
-    wait_no_longer_than = 120
+def expect_by_css(driver, css_tag, wait_no_longer_than=120):
     print(f'Expecting {css_tag}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, css_tag)))
     return element
 
 
-def expect_by_link_text(driver, link_text):
-    wait_no_longer_than = 120
+def expect_by_link_text(driver, link_text, wait_no_longer_than=120):
     print(f'Expecting {link_text}')
     element = WebDriverWait(driver, wait_no_longer_than).until(
         EC.presence_of_element_located((By.LINK_TEXT, link_text)))
+    return element
+
+def expect_by_name(driver, name, wait_no_longer_than=120):
+    print(f'Expecting {name}')
+    element = WebDriverWait(driver, wait_no_longer_than).until(
+        EC.presence_of_element_located((By.NAME, name)))
+    return element
+
+def expect_by_tag(driver, tag, wait_no_longer_than=120):
+    print(f'Expecting {tag}')
+    element = WebDriverWait(driver, wait_no_longer_than).until(
+        EC.presence_of_element_located((By.TAG_NAME, tag)))
     return element
 
 
@@ -657,3 +680,106 @@ def create_organizer_folders(fname, sheet_name):
                   f"\n\tSo EMAIL ABORTED for turf_name = {turf_name}!")
             continue
     create_folders(organizerFiles, "Organizers")
+
+
+# not finished
+# # call entry_selection_func to determine if the row should be scraped
+# # call entry_scrape_func on every row and return a list of the results
+# def iterate_folder(driver, selected_folder_name, entry_selection_func, entry_scrape_func):
+#     get_page(driver)
+#     driver.implicitly_wait(60)
+#     expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_HyperLinkMenuSavedLists"]').click()
+
+
+#     folder_name = '//*[text()="{}"]'.format(selected_folder_name)
+#     expect_by_XPATH(driver, folder_name).click()
+
+#     # find num rows
+#     try:
+#         num_rows = int(expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tfoot/tr/td/table/tbody/tr/td[1]/b[1]', 5).text.split()[0])
+#     except TimeoutException:
+#         num_rows = int(expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tfoot/tr/td/b[1]', 5).text.split()[0])
+
+#     # set the number of rows per page to 999
+#     settings_button = expect_by_XPATH(driver, '//*[@id="HyperLinkSettings"]')
+#     settings_button.click()
+#     rows_p_page_input = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_VANDetailsItemDefaultRows_VANInputItemDetailsItemDefaultRows_DefaultRows"]')
+
+#     rows_p_page_input.clear()
+#     rows_p_page_input.send_keys("999")
+   
+
+#     save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_ButtonSave"]')
+#     save_button.click()
+
+
+#     # for index in range(1,num_rows+1):
+#     max_errors = 15
+#     total_errors = 0
+#     index = 1
+#     while index <= num_rows: 
+#         if total_errors == max_errors:
+#             print("Hit max amount of errors.  Something is probably wrong.  Shutting down to prevent infinite loop")
+#             break
+#         try:
+#             time.sleep(2 + random.randint(1,3))
+#             row_xpath = '//*[@id="ctl00_ContentPlaceHolderVANPage_gvList"]/tbody/tr[{index}]'.format(index=index)
+
+#             # check for map turf
+#             row_type = expect_by_XPATH(driver, row_xpath + '/td[3]/span').text
+
+#             if entry_selection_func(row_type):
+
+#                 # get stuff on edit page
+#                 button = expect_by_XPATH(driver, row_xpath + '/td[4]')
+
+#                 edit_button = expect_by_tag(button, "a")
+#                 edit_button.click()
+
+#                 # accept alert if present
+#                 try:
+#                     WebDriverWait(driver, 5).until(EC.alert_is_present())
+#                     alert = driver.switch_to.alert
+#                     alert.accept()
+#                     print("alert Exists in page")
+#                 except TimeoutException:
+#                     print("alert does not Exist in page")
+                
+#                 time.sleep(1.5)
+#                 search_button = expect_by_XPATH(driver, '//*[@id="addStep"]')
+#                 search_button.click()
+
+#                 edit_s_button = expect_by_XPATH(driver, '//*[@id="editSearchOption"]')
+#                 edit_s_button.click()
+
+
+#                 #click address dropdown
+
+#                 a_button = expect_by_XPATH(driver, '//*[@id="ImageButtonSectionLocationGroups"]')
+#                 a_button.click()
+
+#                 city_input = expect_by_XPATH(driver, '//*[@id="City"]')
+#                 city_input.send_keys("Saint Petersburg") # make this a varialbe?
+
+#                 save_button = expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_SearchRunButton"]')
+#                 save_button.click()
+
+
+#                 time.sleep(5)
+#                 driver.get("https://www.votebuilder.com/Default.aspx")
+
+#                 expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_HyperLinkMenuSavedLists"]').click()
+
+#                 folder_name = '//*[text()="{}"]'.format(selected_folder)
+#                 expect_by_XPATH(driver, folder_name).click()
+#                 print(index)
+#             index+=1
+
+#         except Exception as e:
+#             total_errors+=1
+#             print(e)
+#             driver.get("https://www.votebuilder.com/Default.aspx")
+#             expect_by_XPATH(driver, '//*[@id="ctl00_ContentPlaceHolderVANPage_HyperLinkMenuSavedLists"]').click()
+#             folder_name = '//*[text()="{}"]'.format(selected_folder)
+#             expect_by_XPATH(driver, folder_name).click()
+    

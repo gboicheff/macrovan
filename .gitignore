@@ -138,3 +138,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 emails.txt
+app/src.txt
+regions.pkl
+api_key.json
+client_secret.json
+app/sample.py
+precincts.pkl
+turfs.pkl
+app/test.pkl
+test.pkl
