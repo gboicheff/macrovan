@@ -6,7 +6,7 @@ configparser==5.0.0
 crayons==0.3.1
 future==0.18.2
 idna==2.10
-numpy==1.19.1
+numpy==1.22.0
 pandas==1.1.1
 pefile==2019.4.18
 PyInstaller==3.6
